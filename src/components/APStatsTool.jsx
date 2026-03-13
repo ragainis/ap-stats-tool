@@ -4,38 +4,45 @@ import WhichTest from "./WhichTest";
 import QuickRef from "./QuickRef";
 
 const tabs = [
-  { id: "map", label: "Concept Map", icon: "M" },
-  { id: "test", label: "Which Test?", icon: "?" },
-  { id: "ref", label: "Quick Reference", icon: "R" },
+  { id: "map", label: "Concept Map", shortLabel: "Map", icon: "M" },
+  { id: "test", label: "Which Test?", shortLabel: "Test", icon: "?" },
+  { id: "ref", label: "Quick Reference", shortLabel: "Ref", icon: "R" },
 ];
 
 export default function APStatsTool() {
   const [tab, setTab] = useState("map");
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "20px" }}>
-      <header style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#1e293b", margin: "0 0 16px" }}>
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "clamp(12px, 4vw, 20px)" }}>
+      <header style={{ marginBottom: 16 }}>
+        <h1 style={{ 
+          fontSize: "clamp(18px, 5vw, 24px)", 
+          fontWeight: 700, 
+          color: "#1e293b", 
+          margin: "0 0 12px" 
+        }}>
           AP Statistics Study Tool
         </h1>
-        <nav style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <nav style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               style={{
-                padding: "10px 20px",
+                padding: "10px 12px",
                 borderRadius: 8,
                 background: tab === t.id ? "#2563eb" : "#f1f5f9",
                 color: tab === t.id ? "#fff" : "#1e293b",
                 border: "none",
                 cursor: "pointer",
                 fontWeight: 600,
-                fontSize: 14,
+                fontSize: "clamp(12px, 3vw, 14px)",
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
-                transition: "all 0.15s"
+                gap: 6,
+                transition: "all 0.15s",
+                minHeight: 44,
+                flex: "1 1 auto"
               }}
             >
               <span style={{
@@ -47,11 +54,12 @@ export default function APStatsTool() {
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 11,
-                fontWeight: 700
+                fontWeight: 700,
+                flexShrink: 0
               }}>
                 {t.icon}
               </span>
-              {t.label}
+              <span className="tab-label-full" style={{ display: "inline" }}>{t.label}</span>
             </button>
           ))}
         </nav>

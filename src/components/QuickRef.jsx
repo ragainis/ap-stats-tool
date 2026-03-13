@@ -33,8 +33,9 @@ export default function QuickRef({ onNav }) {
                 onClick={() => setOpen(open === p.id ? null : p.id)}
                 style={{
                   width: "100%", textAlign: "left", border: "none", cursor: "pointer",
-                  padding: "12px 16px", display: "flex", alignItems: "center", gap: 10,
-                  background: isOpen ? "#fef2f2" : "transparent"
+                  padding: "clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)", display: "flex", alignItems: "center", gap: 10,
+                  background: isOpen ? "#fef2f2" : "transparent",
+                  minHeight: 48
                 }}
               >
                 <span style={{
@@ -94,8 +95,8 @@ export default function QuickRef({ onNav }) {
       {/* Scope of Inference Table */}
       <div style={{ marginTop: 24 }}>
         <h3 style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", marginBottom: 10 }}>Scope of Inference (2x2)</h3>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <table style={{ width: "100%", minWidth: 500, borderCollapse: "collapse", fontSize: "clamp(11px, 2.5vw, 12px)" }}>
             <tbody>
               {scopeTable.map((row, ri) => (
                 <tr key={ri}>

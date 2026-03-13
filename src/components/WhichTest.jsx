@@ -50,15 +50,16 @@ export default function WhichTest({ onNav }) {
         return (
           <div key={si} style={{ marginBottom: 20 }}>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: "0 0 12px" }}>{step.q}</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 10 }}>
               {step.opts.map((o, oi) => (
                 <button
                   key={oi}
                   onClick={() => choose(o, si)}
                   style={{
-                    padding: "16px 18px", borderRadius: 10, border: "2px solid #e5e7eb",
+                    padding: "clamp(14px, 4vw, 18px)", borderRadius: 10, border: "2px solid #e5e7eb",
                     background: "#fff", cursor: "pointer", textAlign: "left",
-                    fontSize: 14, fontWeight: 600, color: "#1e293b", transition: "all .15s"
+                    fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 600, color: "#1e293b", transition: "all .15s",
+                    minHeight: 48
                   }}
                   onMouseEnter={e => { e.target.style.borderColor = "#2563eb"; e.target.style.background = "#eff6ff"; }}
                   onMouseLeave={e => { e.target.style.borderColor = "#e5e7eb"; e.target.style.background = "#fff"; }}
@@ -74,12 +75,12 @@ export default function WhichTest({ onNav }) {
       {/* Result card */}
       {proc && (
         <div style={{ borderRadius: 12, border: "2px solid #dc2626", overflow: "hidden", background: "#fff" }}>
-          <div style={{ background: "#dc2626", color: "#fff", padding: "14px 18px" }}>
-            <div style={{ fontSize: 11, opacity: 0.8, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Procedure identified</div>
-            <div style={{ fontSize: 22, fontWeight: 700, marginTop: 2 }}>{proc.name}</div>
-            <div style={{ fontSize: 13, opacity: 0.9, marginTop: 4 }}>{proc.when}</div>
+          <div style={{ background: "#dc2626", color: "#fff", padding: "clamp(12px, 3vw, 14px) clamp(14px, 4vw, 18px)" }}>
+            <div style={{ fontSize: "clamp(10px, 2.5vw, 11px)", opacity: 0.8, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Procedure identified</div>
+            <div style={{ fontSize: "clamp(18px, 5vw, 22px)", fontWeight: 700, marginTop: 2 }}>{proc.name}</div>
+            <div style={{ fontSize: "clamp(12px, 3vw, 13px)", opacity: 0.9, marginTop: 4 }}>{proc.when}</div>
           </div>
-          <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ padding: "clamp(12px, 3vw, 16px) clamp(14px, 4vw, 18px)", display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>Hypotheses</div>
               <div style={{ fontSize: 14, color: "#1e293b", fontFamily: "'Menlo','Consolas',monospace" }}>H0: {proc.h0}</div>

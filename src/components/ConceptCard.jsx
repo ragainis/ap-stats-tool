@@ -16,11 +16,12 @@ export default function ConceptCard({ concept, open, toggle, accent }) {
           textAlign: "left",
           border: "none",
           cursor: "pointer",
-          padding: "10px 14px",
+          padding: "clamp(10px, 3vw, 12px) clamp(12px, 3vw, 14px)",
           display: "flex",
           alignItems: "center",
           gap: 10,
-          background: open ? `${accent}0a` : "transparent"
+          background: open ? `${accent}0a` : "transparent",
+          minHeight: 48
         }}
       >
         <span style={{
@@ -55,7 +56,7 @@ export default function ConceptCard({ concept, open, toggle, accent }) {
       </button>
       
       {open && (
-        <div style={{ padding: "0 14px 16px 46px", display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ padding: "0 clamp(10px, 3vw, 14px) clamp(12px, 3vw, 16px) clamp(36px, 10vw, 46px)", display: "flex", flexDirection: "column", gap: 10 }}>
           <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.7, color: "#374151" }}>
             {concept.def}
           </p>

@@ -55,10 +55,21 @@ export default function ConceptMap({ onNav }) {
 
   return (
     <div>
-      <div style={{ background: "#fafaf9", borderRadius: 12, border: "1px solid #e5e5e5", padding: "6px 0", overflow: "hidden" }}>
+      <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 8, display: "none" }} className="mobile-hint">
+        Scroll horizontally to explore the map
+      </p>
+      <div style={{ 
+        background: "#fafaf9", 
+        borderRadius: 12, 
+        border: "1px solid #e5e5e5", 
+        padding: "6px 0", 
+        overflowX: "auto",
+        overflowY: "hidden",
+        WebkitOverflowScrolling: "touch"
+      }}>
         <svg
           viewBox={`0 0 ${W} ${H}`}
-          style={{ width: "100%", height: "auto", display: "block" }}
+          style={{ width: "100%", minWidth: 700, height: "auto", display: "block" }}
           onMouseLeave={() => setHov(null)}
           onClick={e => {
             if (e.target.tagName === "svg" || (e.target.tagName === "rect" && e.target.dataset.bg)) {
@@ -195,21 +206,21 @@ export default function ConceptMap({ onNav }) {
       {/* Selected node detail panel */}
       {sn && (
         <div style={{ marginTop: 10, borderRadius: 12, border: `2px solid ${su.color}`, overflow: "hidden", background: "#fff" }}>
-          <div style={{ background: su.color, color: "#fff", padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <span style={{ fontSize: 10.5, opacity: 0.8, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8 }}>
+          <div style={{ background: su.color, color: "#fff", padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+            <div style={{ minWidth: 0 }}>
+              <span style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", opacity: 0.8, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8 }}>
                 {su.label} · {su.title}
               </span>
-              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{sn.label}</div>
+              <div style={{ fontSize: "clamp(16px, 4vw, 18px)", fontWeight: 700, marginTop: 2 }}>{sn.label}</div>
             </div>
             <button
               onClick={() => { setSel(null); setOpenC(null); }}
-              style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, width: 30, height: 30, color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+              style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, width: 44, height: 44, minWidth: 44, color: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             >
               X
             </button>
           </div>
-          <div style={{ padding: "14px 16px" }}>
+          <div style={{ padding: "clamp(10px, 3vw, 14px) clamp(12px, 3vw, 16px)" }}>
             {(sOut.length > 0 || sIn.length > 0) && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
                 {sIn.map((e, i) => {
