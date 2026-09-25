@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:preview": "npm run build && npx -y netlify-cli deploy --dir=dist --no-build",
+    "deploy": "npm run build && npx -y netlify-cli deploy --prod --dir=dist --no-build"
   },
   "dependencies": {
     "react": "^18.2.0",
