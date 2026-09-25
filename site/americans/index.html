@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Americans Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f3ee; --surface: #fffdf9; --ink: #1f1c18; --muted: #6b645a;
+  --line: #e4ddd2; --accent: #8a3b1f; --accent-soft: #f3e4dc;
+  --preview: #2f5d62; --recap: #6a4c93;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141311; --surface: #1c1a17; --ink: #ece6dc; --muted: #a39a8c;
+    --line: #2e2a25; --accent: #e08a62; --accent-soft: #33241c;
+    --preview: #7fb8bd; --recap: #b89ae0;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141311; --surface: #1c1a17; --ink: #ece6dc; --muted: #a39a8c;
+  --line: #2e2a25; --accent: #e08a62; --accent-soft: #33241c;
+  --preview: #7fb8bd; --recap: #b89ae0;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 Inter, system-ui, sans-serif; }
+.layout { display: grid; grid-template-columns: 270px 1fr; min-height: 100vh; }
+aside { border-right: 1px solid var(--line); padding: 28px 18px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+aside h1 { font: 650 1.35rem/1.2 Fraunces, Georgia, serif; margin: 0 0 4px; }
+aside .sub { color: var(--muted); font-size: .85rem; margin-bottom: 22px; }
+.season { margin-bottom: 18px; }
+.season h2 { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+.season a { display: block; padding: 5px 10px; border-radius: 6px; color: var(--ink); text-decoration: none; font-size: .92rem; }
+.season a:hover { background: var(--accent-soft); }
+.season a.active { background: var(--accent); color: var(--surface); }
+.season a .k { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 6px; font-size: .8rem; }
+.season a.active .k { color: inherit; opacity: .8; }
+main { padding: 48px 56px 80px; max-width: 820px; }
+.tag { display: inline-block; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+.tag.season_preview { color: var(--preview); }
+.tag.season_recap { color: var(--recap); }
+article h1 { font: 650 2.3rem/1.15 Fraunces, Georgia, serif; margin: 12px 0 28px; }
+article section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+article h3 { font: 500 1.15rem/1.3 Fraunces, Georgia, serif; margin: 0 0 8px; color: var(--accent); }
+article p { margin: 0 0 10px; }
+article ul { margin: 0; padding-left: 20px; }
+article li { margin-bottom: 6px; }
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+.pager button { flex: 1; background: var(--surface); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; padding: 12px 16px; font: inherit; cursor: pointer; text-align: left; }
+.pager button:last-child { text-align: right; }
+.pager button:hover:not(:disabled) { border-color: var(--accent); }
+.pager button:disabled { opacity: .35; cursor: default; }
+.pager small { display: block; color: var(--muted); font-size: .75rem; }
+.mobile-nav { display: none; }
+.empty { color: var(--muted); }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { display: none; }
+  .mobile-nav { display: block; padding: 16px 16px 0; }
+  .mobile-nav h1 { font: 650 1.2rem Fraunces, Georgia, serif; margin: 0 0 8px; }
+  .mobile-nav select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; }
+  main { padding: 20px 16px 60px; }
+  article h1 { font-size: 1.7rem; }
+  article section { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="mobile-nav"><h1 id="m-title"></h1><select id="m-select" aria-label="Jump to entry"></select></div>
+<div class="layout">
+  <aside><h1 id="title"></h1><div class="sub">Spoiler-free companion</div><nav id="nav"></nav></aside>
+  <main><article id="article"></article>
+    <div class="pager"><button id="prev"></button><button id="next"></button></div>
+  </main>
+</div>
+<script id="companion-data" type="application/json">
+{
+ "show": "The Americans",
+ "entries": [
+  {
+   "type": "season_preview",
+   "season": 1,
+   "title": "Season 1 preview",
+   "sections": [
+    {
+     "heading": "The world as the show introduces it",
+     "body": "It's 1981. Ronald Reagan has just taken office, the Cold War is heating up again, and in a quiet suburb of Washington, D.C., Philip and Elizabeth Jennings run a travel agency, pay their mortgage, and raise two kids, Paige and Henry. They are also deep-cover KGB officers. The Soviet Union placed them here years ago, and paired them as husband and wife before they had any real reason to love each other. Their children are American, and they have no idea who their parents are.\n\nThe show asks you to spend your time with the people the era called the enemy. It isn't really a spy thriller wrapped around a family drama. It's closer to the reverse: a story about a marriage, where the missions put pressure on it. Early on, a new neighbor moves in across the street, and his job makes the Jenningses' ordinary suburban life a little more dangerous."
+    },
+    {
+     "heading": "Themes to watch for",
+     "items": [
+      "**Performance vs. reality in marriage.** Philip and Elizabeth's marriage started as a cover story. Watch for the moments when it seems to become something more than that, and for the moments when it doesn't. The show keeps asking whether a love that started as an act can become real.",
+      "**Loyalty: to country, to cause, to family.** The two of them don't believe equally. Notice who seems drawn to American comforts and who holds on to the mission, and how that difference affects the way they treat each other.",
+      "**Identity and disguise.** Wigs, glasses, fake names and invented backstories are part of their daily work. The more interesting question is which of their many selves is the real one, if any of them is.",
+      "**Parenthood and secrets.** Every parent keeps things from their children. Here the secret is the whole foundation of the family. Watch how the show links raising American children with serving the Soviet state.",
+      "**Mirrors across the Cold War.** The show likes to place the KGB and the FBI side by side: similar offices, similar compromises, similar loneliness. Notice when it wants you to see the two sides as more alike than different."
+     ]
+    },
+    {
+     "heading": "Symbols & motifs",
+     "items": [
+      "**Wigs and disguises.** Each one is a small identity that gets put on and taken off. Pay attention to how the characters look and behave just after a disguise comes off.",
+      "**The two houses.** The Jennings home and the house across the street face each other like chess pieces. The show often frames one from inside the other.",
+      "**The garage and the car trunk.** Everyday suburban spaces where the family's hidden work spills into the house.",
+      "**The travel agency.** Their cover business sells people the idea of escaping somewhere else, which is a quiet irony for two people who can't leave their own lives.",
+      "**The kitchen table and family dinners.** This is where the family performs being normal. Look at what gets said there and what doesn't.",
+      "**Period music and Reagan on TV.** The needle-drops from 1981 and the news broadcasts in the background keep reminding you how high the stakes are in this particular moment of history."
+     ]
+    },
+    {
+     "heading": "Questions to consider while watching",
+     "items": [
+      "Is Philip and Elizabeth's marriage real? What would count as proof either way?",
+      "What does each of them love most: the cause, each other, or the life they've built?",
+      "Why do you find yourself rooting for them, and when does the show make that harder?",
+      "What do the children lose, and what do they gain, by not knowing who their parents are?",
+      "How much of a performed life eventually turns into your real life?",
+      "Who in this story is the enemy, and does the answer change depending on whose house you're standing in?"
+     ]
+    },
+    {
+     "heading": "Keep an eye on…",
+     "items": [
+      "Who is the first to say \"I love you,\" and who believes it.",
+      "Small differences in how Philip and Elizabeth talk about home. One of them usually means Russia by it, and one of them usually doesn't.",
+      "How often the show looks at a scene through windows and blinds, or across the street."
+     ]
+    }
+   ]
+  },
+  {
+   "type": "episode",
+   "season": 1,
+   "episode": 1,
+   "title": "Pilot",
+   "sections": [
+    {
+     "heading": "In brief",
+     "body": "The show opens with Elizabeth working as a honey trap, pulling information out of a government official. Then she and Philip go after Nikolai Timoshev, a KGB officer who has defected. They grab him, but their young colleague Rob is stabbed in the fight and later dies, and they miss the ship that was supposed to take Timoshev back to Moscow. That leaves a live defector locked in the trunk of the family car, in the garage of a suburban home where Paige and Henry are doing homework.\n\nFlashbacks reveal that Timoshev assaulted Elizabeth during their training years ago. When Philip learns this, he kills Timoshev himself, and the couple dissolve the body in acid at an abandoned factory. Meanwhile a new family moves in across the street. Stan Beeman is an FBI counterintelligence agent, and he soon notices that the Jenningses' car looks like the one the Bureau is looking for. Elizabeth takes the blame for the failed mission in front of General Zhukov, which protects Philip. The episode ends with Stan sneaking into their garage at night to check the trunk and finding nothing, while Philip watches from the dark holding a gun with a silencer."
+    },
+    {
+     "heading": "How the themes played out",
+     "items": [
+      "**A marriage that's still an act.** Philip and Elizabeth are partners before they are spouses. The two moments that feel most intimate are violent ones: Philip killing Timoshev for what he did to her, and the two of them in the car after getting rid of the body. The show suggests that danger is the only place their marriage is honest so far.",
+      "**Loyalty divided.** Philip is tempted by America: the money, the comfort, the chance to defect and simply stay. Elizabeth isn't tempted at all. Her taking the blame in front of Zhukov is an act of loyalty to the service and to Philip together, and it shows how closely those two things are tied for her.",
+      "**Parenthood.** When Philip confronts the man who bothered Paige at the shoe store, it's the same protective violence he uses in his spy work, now coming out in his ordinary suburban life. It's a first sign that the two lives can't be kept apart.",
+      "**Mirrors.** Stan lives across the street. He is also good at reading people, is also a little lonely, and is also standing in a dark garage at the end of the night. The show introduces him as an equal to Philip, not a bumbling fed."
+     ]
+    },
+    {
+     "heading": "Symbols spotted",
+     "items": [
+      "**The trunk.** A secret kept in the most ordinary part of family life. It's also where the danger ends up when Stan comes to look.",
+      "**The garage.** It's the border between the family's home and their hidden work, and in the final scene someone from the other side crosses it.",
+      "**Disguises.** Elizabeth's wig in the opening scene sets up the pattern: the show introduces her first as someone playing a role.",
+      "**The two houses facing each other.** Now that Stan has moved in, every look across the street carries weight."
+     ]
+    },
+    {
+     "heading": "Story arcs so far",
+     "items": [
+      "**Philip:** He is good at the job, but he's tempted to walk away from it. He likes America more than he's supposed to. Killing Timoshev shows how much Elizabeth means to him.",
+      "**Elizabeth:** She is committed to the cause, guarded, and carrying an old trauma. She protected Philip in front of Moscow without making a show of it.",
+      "**The marriage:** It began as a partnership assigned by the KGB and is starting to change into something they haven't named yet.",
+      "**Stan Beeman:** He is the new neighbor and an FBI counterintelligence agent. He's already suspicious, and he looked in the trunk.",
+      "**Paige & Henry:** They know nothing. They are the reason the stakes feel so high.",
+      "**Martha:** A secretary in the FBI office who Philip meets while in disguise. She's a quiet source close to the Bureau."
+     ]
+    },
+    {
+     "heading": "Questions to carry forward",
+     "items": [
+      "If Elizabeth had told Philip about Timoshev years ago, would their marriage be different now?",
+      "What does Philip really want: to defect, to stay, or something he hasn't figured out yet?",
+      "What has Stan actually seen, and what is he only sensing?",
+      "The pilot introduces them doing violence first and being a family second. Which of those does the show want you to see as their real life?"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "episode",
+   "season": 1,
+   "episode": 2,
+   "title": "The Clock",
+   "sections": [
+    {
+     "heading": "In brief",
+     "body": "Moscow orders Philip and Elizabeth to bug Defense Secretary Caspar Weinberger's study within three days. Philip, posing as a Swedish intelligence officer, seduces Celia Gerard, the wife of a Defense Department official, and gets her to photograph the room. In the pictures they find the right target: a clock. To get it out of the house, Elizabeth poisons Grayson, the teenage son of Weinberger's housekeeper Viola Johnson, with a needle hidden in an umbrella. They offer Viola a terrible deal: bring them the clock and her son gets the antidote. Viola is devout and refuses at first. It takes a frightening confrontation with Philip before she agrees. By the end of the episode the bug is working, and Moscow is listening to Weinberger talk about missile defense.\n\nAt the FBI, Stan and his partner Chris Amador catch Nina, a young employee at the Soviet embassy, smuggling electronics, and Stan blackmails her into becoming his informant."
+    },
+    {
+     "heading": "How the themes played out",
+     "items": [
+      "**What loyalty costs.** This episode shows how cruel the work can be. A child is poisoned so his mother can be used as leverage. The show won't let you root for the Jenningses without also seeing this.",
+      "**Parenthood as leverage.** Viola's love for her son is the pressure point. At the same time, Philip and Elizabeth are parents too, and the episode keeps that uncomfortable parallel in view.",
+      "**Mirrors.** Stan does to Nina what the Jenningses do to Viola: he finds her weak spot and squeezes. Blackmail looks the same whichever side is doing it.",
+      "**Performance.** Philip's Swedish agent is another made-up person, built to fit exactly what Celia wants. Watch how easily he becomes someone else."
+     ]
+    },
+    {
+     "heading": "Symbols spotted",
+     "items": [
+      "**The clock.** It's literally a listening device, and also a reminder of the three-day deadline. Time pressure and surveillance are packed into one ordinary object in a family home.",
+      "**The umbrella.** A harmless, everyday thing turned into a weapon. It's the whole show in a single prop.",
+      "**The darkroom.** Photographs develop slowly in the dark, and so do the secrets they carry.",
+      "**Viola's faith.** Her religion is a kind of loyalty the KGB can't easily bend, and that is exactly why the scenes with her are so hard to watch."
+     ]
+    },
+    {
+     "heading": "Story arcs so far",
+     "items": [
+      "**Philip:** He carries out the harshest parts of the operation. His doubts about the work don't stop him from doing it, and that tension keeps growing.",
+      "**Elizabeth:** She is efficient and does the poisoning herself without hesitation. The cause comes first.",
+      "**The marriage:** They work smoothly as a team and are still keeping each other at a distance at home.",
+      "**Stan:** He has a source inside the Soviet embassy now. It's an important step up, and the way he got her shows how far he'll go.",
+      "**Nina:** She is caught between the embassy and the FBI and is now informing under pressure. Her position is dangerous.",
+      "**Moscow:** They now have ears in the Secretary of Defense's own home."
+     ]
+    },
+    {
+     "heading": "Questions to carry forward",
+     "items": [
+      "Why does the show make you sit through Viola's side of the story instead of cutting away?",
+      "Is Stan's treatment of Nina any different from what the Jenningses did to Viola?",
+      "Does Philip seem to pay a price for the violence, or has he learned to shut it off?",
+      "Elizabeth and Philip split the harshest tasks between them. What does each one choose to do, and what does each one leave to the other?"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "episode",
+   "season": 1,
+   "episode": 3,
+   "title": "Gregory",
+   "sections": [
+    {
+     "heading": "In brief",
+     "body": "Through Nina, Stan learns that Rob, the colleague killed in the pilot, was KGB, and that he had a wife and newborn in Philadelphia. Philip and Elizabeth are sent to finish Rob's last job there: a meeting with his contact. Elizabeth brings in Gregory Thomas, a former Black militant she recruited years ago, whose network helps get Rob's widow Joyce away from the FBI officers watching her. Philip gets the briefcase from the contact. Inside are classified plans for an X-ray laser missile-defense system.\n\nThe job also exposes things between Philip and Elizabeth. Gregory tells Elizabeth he loves her. Philip realizes the two of them were once together, and Elizabeth admits she loved Gregory because of his devotion to the cause. She also admits she is falling in love with Philip. Joyce, who never knew her husband was a spy, is handed over to Claudia, the Jenningses' new handler, who promises to relocate her to Cuba. The episode ends with Stan finding Joyce's body, staged to look like a heroin overdose. Her baby is sent to Rob's parents in Russia."
+    },
+    {
+     "heading": "How the themes played out",
+     "items": [
+      "**A marriage that's real.** Elizabeth finally says something true: she's falling in love with Philip. Notice that it takes jealousy, and an old love coming back, before either of them says anything honest.",
+      "**Belief vs. comfort.** Gregory loves the cause the way Elizabeth does. She fell for him because he believed, which tells you what she needs from Philip and what she's afraid he doesn't have.",
+      "**The family as collateral.** Joyce and her baby are an innocent version of the Jennings family: a spouse and a child who never knew. What happens to them is a warning of what the secret could cost Paige and Henry.",
+      "**Lies told to the people doing the work.** Claudia said Joyce would go to Cuba. The ending shows that the organization lies to its own agents too."
+     ]
+    },
+    {
+     "heading": "Symbols spotted",
+     "items": [
+      "**The briefcase.** The mission is technically a success, but that has become a small thing next to what it cost a family.",
+      "**Racquetball.** Philip and Stan open the episode trying to beat each other on a small court. It's a friendly game, but they are still opponents.",
+      "**Staged scenes.** Joyce's death is made to look like an overdose, and her real story is erased. Another cover story, this time for a death."
+     ]
+    },
+    {
+     "heading": "Story arcs so far",
+     "items": [
+      "**Philip:** He is jealous and hurt, and more emotionally tied to Elizabeth than he admits. He now has a reason to believe she could love him.",
+      "**Elizabeth:** Her past with Gregory helps explain who she is. For the first time she is letting herself love Philip on her own terms.",
+      "**The marriage:** It has crossed a line. Elizabeth has said out loud that she is falling in love with him.",
+      "**Gregory:** An asset who is loyal to Elizabeth personally as well as to the cause. He's a reminder of who she was before.",
+      "**Claudia:** The new handler. She's polite and matronly, and she lies without hesitating.",
+      "**Stan:** Nina's information is paying off. He's getting closer to the people behind Rob, and he has now seen what they're capable of.",
+      "**Nina:** She's proving useful to the FBI, which also means she's in more danger."
+     ]
+    },
+    {
+     "heading": "Questions to carry forward",
+     "items": [
+      "Did Elizabeth know Joyce wasn't really going to Cuba? Would Philip have gone along with it if he had known?",
+      "Can Philip compete with a man who believes in the cause more than he does, and does he want to?",
+      "What do Joyce and her baby say about the risk to Paige and Henry?",
+      "What will Philip and Elizabeth think of Claudia after this?"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "episode",
+   "season": 1,
+   "episode": 4,
+   "title": "In Control",
+   "sections": [
+    {
+     "heading": "In brief",
+     "body": "On March 30, 1981, John Hinckley Jr. shoots President Reagan, and the episode follows the confusion of that day as it unfolded in real time. Claudia puts Philip and Elizabeth on standby for \"Operation Christopher,\" a plan for guerrilla warfare in case the shooting is the start of something bigger. They're sent to map targets, including Weinberger's house, and during that surveillance Elizabeth kills a security officer who comes to check their car. Stan is assigned to find out whether Hinckley had Soviet connections. Nina tells him that people at the embassy think Secretary of State Alexander Haig may be staging a coup.\n\nThe bug in Weinberger's study picks up something alarming: Haig may have the nuclear launch codes. Elizabeth wants to send it to Moscow right away. Philip argues that the information is unconfirmed and that passing it on could cause panic, possibly nuclear. In the end he tells Moscow the corrected version, that Hinckley acted alone. Elizabeth apologizes for brushing him off, and the two of them agree to keep quiet about the intelligence they chose not to send."
+    },
+    {
+     "heading": "How the themes played out",
+     "items": [
+      "**Loyalty vs. judgment.** This is the first time Philip goes against the chain of command, and he may have kept the world out of a war by doing it. Elizabeth's instinct is to report everything. The fight is about whether loyalty means following orders or thinking for yourself.",
+      "**The marriage as a real partnership.** Elizabeth's apology matters. For the first time she accepts Philip's judgment over the orders from Moscow, and they now share a secret the KGB doesn't know about. They are a team inside the team.",
+      "**Mirrors.** On both sides, frightened people are making decisions based on rumors. The embassy thinks it's a coup, the FBI thinks it could be the KGB, and the truth turns out to be much simpler.",
+      "**Two Americas.** The Jenningses watch the country they're working against go through a national trauma, and they have to act like their neighbors while getting ready to fight them."
+     ]
+    },
+    {
+     "heading": "Symbols spotted",
+     "items": [
+      "**Television news.** Real footage from 1981 becomes the plot. History is on screen in every room.",
+      "**The Weinberger bug.** The clock from Episode 2 now brings in information that could start a war, which shows what that operation was really for.",
+      "**\"I am in control here.\"** Haig's real line gives the episode its title and its irony. Nobody is in control, and the people who most look like they are may be the most dangerous."
+     ]
+    },
+    {
+     "heading": "Story arcs so far",
+     "items": [
+      "**Philip:** He trusts his own judgment over Moscow's. His doubts about the job have turned into acting on them.",
+      "**Elizabeth:** She is still the more committed of the two, but she apologizes and chooses Philip's side. Her killing of the security officer shows she doesn't hesitate.",
+      "**The marriage:** They share a real secret from their own bosses. It's the strongest they have been so far.",
+      "**Stan:** He's chasing a KGB connection that doesn't exist, and he relies more and more on Nina.",
+      "**Claudia & Moscow:** Ready for war, and the Jenningses' decision to hold back information was the right call.",
+      "**Weinberger's study:** Still bugged and producing valuable, dangerous intelligence."
+     ]
+    },
+    {
+     "heading": "Questions to carry forward",
+     "items": [
+      "What would have happened if Elizabeth had won the argument?",
+      "What happens to agents who hold back information, if Moscow ever finds out?",
+      "Does a secret kept from their own side bring Philip and Elizabeth closer, or make them more vulnerable?",
+      "A security officer died in a night of panic over something that turned out not to be a conspiracy. How does the show want you to feel about that?"
+     ]
+    }
+   ]
+  }
+ ]
+}
+</script>
+<script>
+const data = JSON.parse(document.getElementById('companion-data').textContent || '{}');
+const entries = data.entries || [];
+const show = data.show || 'Show';
+const LABEL = { season_preview: 'Season preview', episode: 'Episode', season_recap: 'Season recap' };
+const idOf = e => e.type === 'episode' ? `s${e.season}e${e.episode}` : `s${e.season}-${e.type === 'season_preview' ? 'preview' : 'recap'}`;
+const code = e => e.type === 'episode' ? `S${e.season}E${e.episode}` : e.type === 'season_preview' ? 'Preview' : 'Recap';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const fmt = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>');
+const storeKey = 'companion:' + show;
+const store = { get() { try { return localStorage.getItem(storeKey); } catch { return null; } },
+                set(v) { try { localStorage.setItem(storeKey, v); } catch {} } };
+
+document.getElementById('title').textContent = show;
+document.getElementById('m-title').textContent = show;
+
+const nav = document.getElementById('nav');
+const sel = document.getElementById('m-select');
+const seasons = [...new Set(entries.map(e => e.season))];
+for (const s of seasons) {
+  const div = document.createElement('div'); div.className = 'season';
+  div.innerHTML = `<h2>Season ${s}</h2>`;
+  const og = document.createElement('optgroup'); og.label = `Season ${s}`;
+  for (const e of entries.filter(x => x.season === s)) {
+    const a = document.createElement('a'); a.href = '#' + idOf(e); a.dataset.id = idOf(e);
+    const name = e.type === 'episode' ? (e.title || `Episode ${e.episode}`) : LABEL[e.type];
+    a.innerHTML = `<span class="k">${esc(code(e))}</span>${esc(name)}`;
+    div.appendChild(a);
+    const o = document.createElement('option'); o.value = idOf(e); o.textContent = `${code(e)} · ${name}`; og.appendChild(o);
+  }
+  nav.appendChild(div); sel.appendChild(og);
+}
+sel.onchange = () => { location.hash = sel.value; };
+
+function render() {
+  const art = document.getElementById('article');
+  if (!entries.length) { art.innerHTML = '<p class="empty">No entries yet.</p>'; return; }
+  const want = location.hash.slice(1) || store.get();
+  let i = entries.findIndex(e => idOf(e) === want);
+  if (i < 0) i = entries.length - 1;
+  const e = entries[i];
+  store.set(idOf(e));
+  const tag = e.type === 'episode' ? `Season ${e.season} · Episode ${e.episode}` : `Season ${e.season} · ${LABEL[e.type]}`;
+  art.innerHTML = `<span class="tag ${e.type}">${esc(tag)}</span><h1>${esc(e.title || LABEL[e.type])}</h1>` +
+    (e.sections || []).map(s => {
+      const paras = s.body ? String(s.body).split(/\n\s*\n/).map(p => `<p>${fmt(p)}</p>`).join('') : '';
+      const list = s.items ? `<ul>${s.items.map(x => `<li>${fmt(x)}</li>`).join('')}</ul>` : '';
+      return `<section><h3>${esc(s.heading)}</h3>${paras}${list}</section>`;
+    }).join('');
+  nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.dataset.id === idOf(e)));
+  sel.value = idOf(e);
+  const setBtn = (btn, t, label) => {
+    btn.disabled = !t;
+    btn.innerHTML = t ? `<small>${label}</small>${esc(code(t))} · ${esc(t.type === 'episode' ? (t.title || '') : LABEL[t.type])}` : `<small>${label}</small>—`;
+    btn.onclick = t ? () => { location.hash = idOf(t); window.scrollTo(0, 0); } : null;
+  };
+  setBtn(document.getElementById('prev'), entries[i - 1], '← Previous');
+  setBtn(document.getElementById('next'), entries[i + 1], 'Next →');
+}
+document.addEventListener('keydown', ev => {
+  if (ev.target.tagName === 'SELECT') return;
+  if (ev.key === 'ArrowLeft') document.getElementById('prev').click();
+  if (ev.key === 'ArrowRight') document.getElementById('next').click();
+});
+window.addEventListener('hashchange', render);
+render();
+</script>
+</body>
+</html>

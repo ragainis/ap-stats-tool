@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mezins Projects</title>
+<meta name="description" content="A collection of small tools and companions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f2ee; --surface: #fffdf9; --ink: #1d1b18; --muted: #6b655c;
+  --line: #e2dcd2; --accent: #2f5d62; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131312; --surface: #1c1b19; --ink: #ece7df; --muted: #a39b8f;
+    --line: #2d2b27; --accent: #86bfc4; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131312; --surface: #1c1b19; --ink: #ece7df; --muted: #a39b8f;
+  --line: #2d2b27; --accent: #86bfc4; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Inter, system-ui, sans-serif; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 72px 24px 64px; }
+header h1 { font: 600 clamp(2.2rem, 5vw, 3.2rem)/1.1 Fraunces, Georgia, serif; margin: 0 0 8px; letter-spacing: -.01em; }
+header p { color: var(--muted); margin: 0 0 44px; font-size: 1.05rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
+.tile { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  overflow: hidden; color: inherit; text-decoration: none; box-shadow: var(--shadow); transition: transform .15s ease, border-color .15s ease; }
+.tile:hover, .tile:focus-visible { transform: translateY(-3px); border-color: var(--accent); outline: none; }
+.art { height: 128px; display: grid; place-items: center; }
+.art svg { width: 64px; height: 64px; }
+.body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.kind { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
+.tile h2 { font: 600 1.35rem/1.25 Fraunces, Georgia, serif; margin: 0; }
+.tile p { margin: 0; color: var(--muted); font-size: .95rem; flex: 1; }
+.go { margin-top: 12px; font-weight: 600; font-size: .9rem; color: var(--accent); }
+.stats .art { background: linear-gradient(135deg, #dbe7f3, #b9d0e8); color: #1f4e79; }
+.americans .art { background: linear-gradient(135deg, #3a1b1b, #7a2424); color: #f3d9c4; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .stats .art { background: linear-gradient(135deg, #1b2a3a, #24405e); color: #b9d3ee; }
+}
+footer { margin-top: 56px; color: var(--muted); font-size: .85rem; }
+@media (max-width: 600px) { .wrap { padding: 44px 16px 48px; } header p { margin-bottom: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Projects</h1>
+    <p>Small tools and companions I've built.</p>
+  </header>
+  <main class="grid">
+    <a class="tile stats" href="/ap-stats/">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <path d="M6 54c8 0 12-40 26-40s18 40 26 40"/><path d="M4 58h56"/><path d="M32 14v44" stroke-dasharray="3 4"/>
+        </svg>
+      </div>
+      <div class="body">
+        <span class="kind">Study tool</span>
+        <h2>AP Statistics</h2>
+        <p>Practice and review for the AP Statistics exam.</p>
+        <span class="go">Open →</span>
+      </div>
+    </a>
+    <a class="tile americans" href="/americans/">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+          <rect x="6" y="12" width="52" height="34" rx="4"/><path d="M22 54h20M32 46v8"/>
+          <path d="M32 20l2.4 5 5.6.8-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-.8z" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="body">
+        <span class="kind">TV companion</span>
+        <h2>The Americans</h2>
+        <p>Spoiler-free season previews and episode recaps: themes, symbols and questions to consider.</p>
+        <span class="go">Open →</span>
+      </div>
+    </a>
+  </main>
+  <footer>mezins.com</footer>
+</div>
+</body>
+</html>
