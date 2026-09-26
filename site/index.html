@@ -41,6 +41,7 @@ header p { color: var(--muted); margin: 0 0 44px; font-size: 1.05rem; }
 .stats .art { background: linear-gradient(135deg, #dbe7f3, #b9d0e8); color: #1f4e79; }
 .americans .art { background: linear-gradient(135deg, #3a1b1b, #7a2424); color: #f3d9c4; }
 .health .art { background: linear-gradient(135deg, #d7ece9, #b2d8d3); color: #1f5f5d; }
+.books .art { background: linear-gradient(135deg, #6d2a22, #3a1a14); color: #e8cf94; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .stats .art { background: linear-gradient(135deg, #1b2a3a, #24405e); color: #b9d3ee; }
   :root:not([data-theme="light"]) .health .art { background: linear-gradient(135deg, #15302e, #1f4a46); color: #a9dcd6; }
@@ -66,6 +67,20 @@ footer { margin-top: 56px; color: var(--muted); font-size: .85rem; }
         <span class="kind">Daily habits</span>
         <h2>Stretch · Strength · Diet</h2>
         <p>Guided stretch timer, 10-minute kettlebell EMOM and the protein-floor food guide.</p>
+        <span class="go">Open →</span>
+      </div>
+    </a>
+    <a class="tile books" href="/books/">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+          <rect x="10" y="14" width="10" height="38" rx="1.5"/><rect x="22" y="10" width="10" height="42" rx="1.5"/>
+          <path d="M36 16l9-2.5 9 36.5-9 2.5z"/><path d="M13 22h4M25 18h4M13 44h4M25 44h4"/><path d="M6 54h52"/>
+        </svg>
+      </div>
+      <div class="body">
+        <span class="kind">Reading list</span>
+        <h2>Books</h2>
+        <p>My library by genre, style, popularity, era and tags, shown with classic covers.</p>
         <span class="go">Open →</span>
       </div>
     </a>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Books</title>
+<meta name="description" content="My reading list: grouped by genre, style, popularity, era and tags, with classic covers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f1eadb; --paper: #faf5ea; --surface: #fffaf0; --ink: #2a2118; --muted: #74675a; --line: #dfd2bb;
+  --accent: #7a2e1f; --gilt: #a67c2e; --shadow: 0 1px 2px rgba(60,40,20,.08), 0 8px 24px rgba(60,40,20,.10);
+  --kbd: #ece2cf;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17120e; --paper: #1e1813; --surface: #241d17; --ink: #efe4d2; --muted: #a8977f; --line: #3a2f25;
+    --accent: #d88a6f; --gilt: #d6aa55; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.4); --kbd: #2f261e;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17120e; --paper: #1e1813; --surface: #241d17; --ink: #efe4d2; --muted: #a8977f; --line: #3a2f25;
+  --accent: #d88a6f; --gilt: #d6aa55; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.4); --kbd: #2f261e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 Inter, system-ui, sans-serif; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+kbd { font: 500 .7rem/1 ui-monospace, Consolas, monospace; background: var(--kbd); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; }
+.serif { font-family: "Cormorant Garamond", Georgia, serif; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 28px 24px 80px; }
+
+header.top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; justify-content: space-between; }
+header.top .brand { display: flex; align-items: baseline; gap: 14px; }
+h1 { font: 700 clamp(2.2rem, 5vw, 3.2rem)/1 "Cormorant Garamond", Georgia, serif; margin: 0; letter-spacing: .01em; }
+.home { color: var(--muted); text-decoration: none; font-size: .9rem; }
+.home:hover { color: var(--ink); }
+.help-btn { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: .85rem; color: var(--muted); }
+
+.stats { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 16px 0 20px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.stat b { display: block; font: 700 1.7rem/1.1 "Cormorant Garamond", Georgia, serif; }
+.stat span { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.search { flex: 1 1 260px; display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; }
+.search input { border: 0; background: none; outline: none; padding: 10px 0; width: 100%; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: none; border-radius: 7px; padding: 6px 11px; font-size: .85rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.sel { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--muted); }
+.sel select { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; color: var(--ink); }
+
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 22px; align-items: start; }
+aside.facets { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; padding-right: 4px; }
+.facet { margin-bottom: 16px; }
+.facet h3 { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; display: flex; justify-content: space-between; }
+.facet h3 button { border: 0; background: none; color: var(--accent); font-size: .7rem; letter-spacing: 0; text-transform: none; padding: 0; }
+.opt { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: 0; padding: 4px 6px; border-radius: 6px; font-size: .86rem; }
+.opt:hover { background: var(--paper); }
+.opt .ic { width: 20px; text-align: center; }
+.opt .n { margin-left: auto; color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.opt[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.opt[aria-pressed="true"] .n { color: rgba(255,255,255,.8); }
+.opt.zero { opacity: .4; }
+.tagcloud { display: flex; flex-wrap: wrap; gap: 5px; }
+.tagcloud .opt { width: auto; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; font-size: .78rem; }
+.filters-btn { display: none; }
+.active-filters { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 12px; }
+.active-filters button { border: 1px solid var(--accent); color: var(--accent); background: none; border-radius: 999px; padding: 2px 10px; font-size: .78rem; }
+.summary { color: var(--muted); font-size: .85rem; margin-bottom: 10px; }
+
+.group { margin-bottom: 26px; content-visibility: auto; contain-intrinsic-size: 600px; }
+.group > h2 { font: 700 1.6rem/1.1 "Cormorant Garamond", Georgia, serif; margin: 0 0 12px; display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.group > h2 .gi { font-size: 1.2rem; }
+.group > h2 small { font: 500 .8rem Inter, sans-serif; color: var(--muted); }
+
+/* covers view */
+.shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 20px 16px; }
+.book { background: none; border: 0; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+.cover { position: relative; aspect-ratio: 2 / 3; border-radius: 3px 6px 6px 3px; overflow: hidden; box-shadow: var(--shadow), inset 3px 0 0 rgba(0,0,0,.15); background: #6d3325; transition: transform .18s ease, box-shadow .18s ease; }
+.book:hover .cover, .book.cur .cover { transform: translateY(-4px) rotate(-1deg); box-shadow: 0 12px 28px rgba(60,40,20,.28); }
+.book.cur .cover { outline: 3px solid var(--gilt); outline-offset: 2px; }
+.cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cover .cloth { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 12% 10%; color: #f2dfae; text-align: center;
+  background-image: linear-gradient(90deg, rgba(0,0,0,.25) 0 6%, transparent 6% 8%, rgba(255,255,255,.06) 8% 9%, transparent 9%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.035) 0 2px, transparent 2px 4px); }
+.cloth .ct { font: 700 .92rem/1.15 "Cormorant Garamond", Georgia, serif; border-top: 1px solid rgba(242,223,174,.6); border-bottom: 1px solid rgba(242,223,174,.6); padding: 6px 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+.cloth .ca { font: 500 .66rem/1.2 "Cormorant Garamond", Georgia, serif; letter-spacing: .06em; text-transform: uppercase; opacity: .9; }
+.cloth .orn { font-size: .9rem; opacity: .8; }
+.badges { position: absolute; left: 5px; top: 5px; display: flex; gap: 3px; }
+.badges span { background: rgba(20,14,8,.78); color: #f2dfae; font-size: .62rem; font-weight: 700; padding: 2px 5px; border-radius: 3px; letter-spacing: .04em; }
+.book .bt { font: 600 .98rem/1.15 "Cormorant Garamond", Georgia, serif; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.book .ba { font-size: .74rem; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.stars { color: var(--gilt); font-size: .72rem; letter-spacing: 1px; }
+
+/* list view */
+.rows { display: flex; flex-direction: column; gap: 4px; }
+.row { display: grid; grid-template-columns: 36px minmax(0, 2.4fr) minmax(0, 1.2fr) 70px minmax(0, 1.1fr) minmax(0, 1fr) 70px 72px; gap: 12px; align-items: center; text-align: left; background: var(--surface); border: 1px solid transparent; border-radius: 8px; padding: 6px 10px; }
+.row:hover, .row.cur { border-color: var(--gilt); }
+.row .mini { width: 36px; aspect-ratio: 2/3; border-radius: 2px; overflow: hidden; position: relative; background: #6d3325; }
+.row .mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.row .rt b { font: 600 1.05rem/1.15 "Cormorant Garamond", Georgia, serif; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.row .rt span, .row .c { font-size: .78rem; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.pop { display: inline-flex; gap: 2px; }
+.pop i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.pop i.on { background: var(--gilt); }
+.rows-head { display: grid; grid-template-columns: 36px minmax(0, 2.4fr) minmax(0, 1.2fr) 70px minmax(0, 1.1fr) minmax(0, 1fr) 70px 72px; gap: 12px; padding: 0 10px 4px; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+/* detail drawer */
+.scrim { position: fixed; inset: 0; background: rgba(20,12,6,.45); z-index: 20; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.scrim.open { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; z-index: 21; top: 0; right: 0; bottom: 0; width: min(640px, 100%); background: var(--paper); box-shadow: -10px 0 40px rgba(0,0,0,.25); transform: translateX(102%); transition: transform .25s ease; overflow: auto; }
+.drawer.open { transform: none; }
+.dhead { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 20px; padding: 26px 26px 10px; }
+.dhead .cover { box-shadow: 0 10px 28px rgba(0,0,0,.3); }
+.dhead h2 { font: 700 2rem/1.05 "Cormorant Garamond", Georgia, serif; margin: 0 0 4px; }
+.dhead .sub { font: italic 500 1.1rem/1.2 "Cormorant Garamond", Georgia, serif; color: var(--muted); margin-bottom: 8px; }
+.dhead .by { font-size: .95rem; margin-bottom: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.chip { font-size: .76rem; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 10px; }
+button.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.k { border-color: var(--gilt); }
+.dbody { padding: 6px 26px 40px; }
+.dbody h4 { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 6px; }
+.dbody p { margin: 0 0 10px; }
+.fs { font: italic 500 1.15rem/1.35 "Cormorant Garamond", Georgia, serif; border-left: 3px solid var(--gilt); padding-left: 12px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.facts div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.facts b { display: block; font: 700 1.15rem "Cormorant Garamond", Georgia, serif; }
+.facts span { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.links a { color: var(--accent); font-weight: 600; font-size: .88rem; }
+.close { position: sticky; top: 10px; float: right; margin: 10px 12px 0 0; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 12px; font-size: .82rem; z-index: 2; }
+.note { font-size: .78rem; color: var(--muted); }
+
+.overlay { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.45); display: none; place-items: center; padding: 16px; }
+.overlay.open { display: grid; }
+.sheet { background: var(--paper); border-radius: 14px; width: min(560px, 100%); padding: 22px 24px; box-shadow: var(--shadow); max-height: 90vh; overflow: auto; }
+.sheet h2 { font: 700 1.6rem "Cormorant Garamond", Georgia, serif; margin: 0 0 8px; }
+.sheet td { padding: 6px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+.sheet td:first-child { width: 140px; }
+.empty { padding: 40px; text-align: center; color: var(--muted); }
+
+@media (hover: none), (max-width: 760px) { kbd { display: none; } }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  aside.facets { display: none; position: fixed; inset: 0; z-index: 25; max-height: none; background: var(--paper); padding: 20px 16px 60px; }
+  aside.facets.open { display: block; }
+  .filters-btn { display: inline-flex; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 12px; font-weight: 600; font-size: .85rem; }
+  .row, .rows-head { grid-template-columns: 36px minmax(0, 1fr) 72px; }
+  .row .c, .rows-head .c { display: none; }
+}
+@media (max-width: 600px) {
+  .wrap { padding: 20px 16px 48px; }
+  .shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; }
+  .dhead { grid-template-columns: 110px minmax(0, 1fr); padding: 18px 16px 6px; gap: 14px; }
+  .dhead h2 { font-size: 1.5rem; }
+  .dbody { padding: 4px 16px 32px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>Books</h1><a class="home" href="/">← mezins.com</a></div>
+    <button class="help-btn" id="helpBtn">Shortcuts <kbd>?</kbd></button>
+  </header>
+  <div class="stats" id="stats"></div>
+  <div class="bar">
+    <label class="search"><span aria-hidden="true">🔎</span><input id="q" type="search" placeholder="Search title, author, tag…" aria-label="Search books"><kbd>/</kbd></label>
+    <div class="seg" id="shelf" role="group" aria-label="Shelf"></div>
+    <label class="sel">Group <kbd>G</kbd><select id="group"></select></label>
+    <label class="sel">Sort <kbd>O</kbd><select id="sort"></select></label>
+    <div class="seg" id="view" role="group" aria-label="View"></div>
+    <button class="filters-btn" id="filtersBtn">Filters</button>
+  </div>
+  <div class="layout">
+    <aside class="facets" id="facets" aria-label="Filters"></aside>
+    <main>
+      <div class="active-filters" id="active"></div>
+      <div class="summary" id="summary"></div>
+      <div id="results"></div>
+    </main>
+  </div>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Book details" aria-hidden="true"></aside>
+<div class="overlay" id="help" role="dialog" aria-modal="true"><div class="sheet" id="helpSheet"></div></div>
+<script src="app.js"></script>
+</body>
+</html>
