@@ -88,7 +88,8 @@ section.panel.active { display: block; }
 .item .t { font-weight: 600; font-size: .95rem; line-height: 1.3; }
 .item .s { color: var(--muted); font-size: .8rem; }
 .item .check { margin-left: auto; color: var(--ok); font-weight: 700; opacity: 0; }
-.item.did .check { opacity: 1; }
+.item.did .check, .item.part .check { opacity: 1; }
+.item.part .check { color: var(--warn); font: 600 .75rem "JetBrains Mono", monospace; }
 
 /* detail */
 .detail { padding: 24px; }
@@ -142,6 +143,7 @@ ol.steps li { margin-bottom: 6px; }
 .days { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; margin: 12px 0 8px; }
 .day { height: 38px; min-width: 0; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); font: 500 .7rem "JetBrains Mono", monospace; color: var(--muted); display: grid; place-items: center; padding: 0; }
 .day.on { background: var(--strength); border-color: var(--strength); color: #fff; }
+.day.half { background: linear-gradient(135deg, var(--strength) 50%, var(--surface-2) 50%); border-color: var(--strength); color: var(--ink); }
 .day.today { outline: 2px solid var(--ink); outline-offset: 1px; }
 .day.future { opacity: .35; cursor: default; }
 
@@ -237,6 +239,9 @@ details summary { cursor: pointer; font-weight: 600; color: var(--accent); }
 .pick .tick { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: .65rem; color: transparent; }
 .pick.on .tick { background: var(--accent); border-color: var(--accent); color: #fff; }
 details.ref { margin-top: 18px; }
+.pick:hover .pn span, .pick.cur .pn span { -webkit-line-clamp: unset; display: block; overflow: visible; }
+.setlog { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+.setlog .ctrls { gap: 6px; }
 details.ref .h3 { margin-top: 12px; }
 
 /* key hints + overlay */

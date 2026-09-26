@@ -19,10 +19,11 @@ const store = {
   set(k, v) { try { localStorage.setItem('mz-health:' + k, JSON.stringify(v)); } catch {} },
 };
 const dkey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-const blankDay = () => ({ stretch: [], strength: false, meals: { morning: [], midday: [], dinner: [] }, portion: 170 });
+const blankDay = () => ({ stretch: [], stretchSets: {}, strength: false, kbRounds: [false, false], meals: { morning: [], midday: [], dinner: [] }, portion: 170 });
 function getDay(k = dkey()) {
-  const log = store.get('log', {}), d = Object.assign(blankDay(), log[k]);
+  const log = store.get('log', {}), raw = log[k] || {}, d = Object.assign(blankDay(), raw);
   d.meals = Object.assign({ morning: [], midday: [], dinner: [] }, d.meals);
+  if (!raw.kbRounds && raw.strength) d.kbRounds = [true, true]; // days logged before per-round logging
   return d;
 }
 function setDay(d, k = dkey()) { const log = store.get('log', {}); log[k] = d; store.set('log', log); renderToday(); }
@@ -36,6 +37,7 @@ const S = {
 /* ---------- helpers ---------- */
 const R = v => v == null ? { min: 0, max: 0 } : typeof v === 'object' ? { min: v.min, max: v.max } : { min: v, max: v };
 const rtxt = r => r.min === r.max ? `${Math.round(r.min)}` : `${Math.round(r.min)}–${Math.round(r.max)}`;
+const ceilGap = g => Math.ceil(g - 1e-9);
 const rng = v => v == null ? '' : typeof v === 'object' ? `${v.min}–${v.max}` : String(v);
 const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
@@ -243,21 +245,58 @@ function renderStretch() {
       “Affected” means the leg you're rehabbing. Press <kbd>Space</kbd> and the timer counts every hold, rep and set for you.</p>
     <div class="grid-2">
       <div class="card list" id="stList">${P.exercises.map((ex, i) => `
-        <button class="item${i === S.stretchIdx ? ' sel' : ''}${d.stretch.includes(ex.id) ? ' did' : ''}" data-i="${i}">
+        <button class="item${i === S.stretchIdx ? ' sel' : ''}" data-i="${i}">
           <span class="num">${i + 1}</span>
           <span><span class="t">${esc(ex.name)}</span><br><span class="s">${esc(ex.feel_it)}</span></span>
-          <span class="check" aria-label="done today">✓</span>
+          <span class="check"></span>
         </button>`).join('')}
       </div>
       <div class="card detail" id="stDetail"></div>
     </div>`;
+  paintStretchList();
   renderStretchDetail();
+}
+
+// Per-set logging: an exercise counts as done when every set is logged.
+const setsFor = (ex, d = getDay()) => { const a = (d.stretchSets[ex.id] || []).slice(0, ex.dosage.sets); while (a.length < ex.dosage.sets) a.push(false); return a; };
+function paintStretchList() {
+  const d = getDay();
+  $$('#stList .item').forEach((el, i) => {
+    const ex = S.data.stretch.exercises[i], sets = setsFor(ex, d), n = sets.filter(Boolean).length;
+    el.classList.toggle('did', n === sets.length);
+    el.classList.toggle('part', n > 0 && n < sets.length);
+    el.querySelector('.check').textContent = n === sets.length ? '✓' : n ? `${n}/${sets.length}` : '';
+  });
+}
+function paintSetLog() {
+  const box = $('#stSets'); if (!box) return;
+  const ex = stretchEx(), sets = setsFor(ex);
+  box.innerHTML = sets.map((on, i) => `<button class="btn${on ? ' on' : ''}" data-set="${i}">${i === sets.indexOf(false) ? '<kbd>Enter</kbd> ' : ''}${on ? `Set ${i + 1} ✓` : `Log set ${i + 1}`}</button>`).join('');
+}
+function logSet(i, force) {
+  const ex = stretchEx(), d = getDay(), sets = setsFor(ex, d);
+  const was = sets.every(Boolean);
+  sets[i] = force === true ? true : !sets[i];
+  d.stretchSets[ex.id] = sets;
+  const all = sets.every(Boolean);
+  d.stretch = all ? [...new Set([...d.stretch, ex.id])] : d.stretch.filter(x => x !== ex.id);
+  setDay(d);
+  paintStretchList(); paintSetLog();
+  if (all && !was) {
+    burst($('#stSets'));
+    const left = S.data.stretch.exercises.length - d.stretch.length;
+    toast(left ? `${ex.name} done. ${left} to go.` : 'Stretching done for today 🎉');
+    if (left) setTimeout(() => selectStretch(S.stretchIdx + 1), 900);
+  } else if (sets[i]) toast(`Set ${i + 1} logged`);
+}
+function logNextSet() {
+  const sets = setsFor(stretchEx()), i = sets.indexOf(false);
+  logSet(i >= 0 ? i : sets.length - 1);
 }
 
 function renderStretchDetail() {
   const ex = stretchEx(), D = ex.dosage, n = S.data.stretch.exercises.length;
   const mins = isHold(ex) ? Math.round(D.repeat * (D.hold_sec + D.rest_sec) * D.sets / 60) : null;
-  const done = getDay().stretch.includes(ex.id);
   $('#stDetail').innerHTML = `
     <div class="eyebrow">Exercise ${S.stretchIdx + 1} of ${n}</div>
     <h2>${esc(ex.name)}</h2>
@@ -279,15 +318,16 @@ function renderStretchDetail() {
         <div class="ctrls">
           <button class="btn primary" data-act="st-go" id="stGo"></button>
           <button class="btn" data-act="st-reset"><kbd>R</kbd> Reset</button>
-          <button class="btn${done ? ' on' : ''}" data-act="st-done" id="stDone"><kbd>Enter</kbd> ${done ? 'Done ✓' : 'Mark done'}</button>
           <button class="btn" data-act="st-next"><kbd>→</kbd> Next</button>
           <button class="btn" data-act="fig"></button>
         </div>
+        <div class="setlog"><span class="total">Log sets:</span><span class="ctrls" id="stSets"></span></div>
       </div>
       <div class="figbox" id="stFig"></div>
     </div>`;
   stFig = FIG.make($('#stFig')).set(ex.id);
   applyFigVisibility();
+  paintSetLog();
   resetStretch();
   enter('#stDetail > *');
 }
@@ -321,7 +361,7 @@ function stretchGo() {
     ST.phase = 'count'; ST.rep++; beep(740, 0.06, 0.1); pulse('#stBig');
     if (ST.rep >= D.repeat) {
       if (ST.set >= D.sets) { finishStretch(); return; }
-      ST.set++; ST.rep = 0; beep(988, 0.2); toast(`Set ${ST.set - 1} done. Rest, then set ${ST.set}.`);
+      logSet(ST.set - 1, true); ST.set++; ST.rep = 0; beep(988, 0.2); toast(`Set ${ST.set - 1} logged. Rest, then set ${ST.set}.`);
     }
     paintStretchTimer(); return;
   }
@@ -343,7 +383,7 @@ function stretchTick(dt) {
       ST.rep++;
       if (ST.rep > D.repeat) {
         if (ST.set >= D.sets) { finishStretch(); return; }
-        ST.set++; ST.rep = 1; toast(`Set ${ST.set - 1} done. Starting set ${ST.set}.`);
+        logSet(ST.set - 1, true); ST.set++; ST.rep = 1; toast(`Set ${ST.set - 1} logged. Starting set ${ST.set}.`);
       }
       ST.phase = 'hold'; ST.remain = D.hold_sec * 1000; beep(988, 0.15); pulse('#stBig'); syncStretchFig();
     }
@@ -354,22 +394,7 @@ function stretchTick(dt) {
 function finishStretch() {
   ST.running = false; ST.phase = 'done';
   beep(784, 0.15); setTimeout(() => beep(1046, 0.3), 160);
-  markStretch(true); paintStretchTimer(); syncStretchFig(true);
-}
-
-function markStretch(force) {
-  const ex = stretchEx(), d = getDay(), has = d.stretch.includes(ex.id);
-  const on = force === true ? true : !has;
-  d.stretch = on ? [...new Set([...d.stretch, ex.id])] : d.stretch.filter(x => x !== ex.id);
-  setDay(d);
-  $$('#stList .item')[S.stretchIdx]?.classList.toggle('did', on);
-  const b = $('#stDone'); if (b) { b.classList.toggle('on', on); b.innerHTML = `<kbd>Enter</kbd> ${on ? 'Done ✓' : 'Mark done'}`; }
-  if (on && !has) {
-    burst(b);
-    const left = S.data.stretch.exercises.length - d.stretch.length;
-    toast(left ? `${ex.name} done. ${left} to go.` : 'Stretching done for today 🎉');
-    if (left && force === true) setTimeout(() => selectStretch(S.stretchIdx + 1), 900);
-  }
+  logSet(ST.set - 1, true); paintStretchTimer(); syncStretchFig(true);
 }
 
 function selectStretch(i) {
@@ -419,9 +444,9 @@ function renderStrength() {
           <button class="btn" data-act="em-next" aria-label="Next exercise"><kbd>→</kbd> Next</button>
           <button class="btn" data-act="em-reset"><kbd>R</kbd> Reset</button>
           <button class="btn${S.peak ? ' on' : ''}" data-act="peak" id="peakBtn"><kbd>P</kbd> Peak week${S.peak ? ' on' : ''}</button>
-          <button class="btn" data-act="em-done" id="emDone"></button>
           <button class="btn" data-act="fig"></button>
         </div>
+        <div class="setlog"><span class="total">Log rounds:</span><span class="ctrls" id="emRounds"></span></div>
         <div class="total" id="emTotal" style="margin-top:10px"></div>
       </div>
       <div class="figbox big" id="emFig"></div>
@@ -475,9 +500,7 @@ function paintEmom() {
   $('#emNext').textContent = done ? 'Logged in your 30-day tracker.' : nx ? `Next: ${nx.name} (${rxText(nx)})` : 'Last minute, finish strong.';
   $('#emTotal').innerHTML = `<span class="mono">${mmss(Math.max(0, (total - EM.elapsed) / 1000))}</span> left of ${K.protocol.duration_min}:00`;
   $('#emGo').innerHTML = `<kbd>Space</kbd> ${done ? 'Again' : EM.running ? 'Pause' : EM.started ? 'Resume' : 'Start'}`;
-  const today = getDay().strength;
-  $('#emDone').classList.toggle('on', today);
-  $('#emDone').innerHTML = `<kbd>Enter</kbd> ${today ? 'Logged ✓' : 'Log today'}`;
+  paintRounds();
   if (emFig && ex.id !== lastFigEx) { lastFigEx = ex.id; emFig.set(ex.id); if (S.showFig) emFig.loop(); }
 }
 
@@ -496,14 +519,13 @@ function emomTick(dt) {
   if (afterSec !== beforeSec && afterSec <= 3 && afterSec > 0 && EM.elapsed < total) beep(520, 0.05, 0.08);
   if (EM.elapsed >= total) {
     EM.running = false; beep(784, 0.15); setTimeout(() => beep(1046, 0.4), 160);
-    const d = getDay(); if (!d.strength) { d.strength = true; setDay(d); }
-    renderTracker(); paintEmom(); renderPlan(); burst($('#emRing')); toast('Session complete, logged ✓');
+    toggleRound(1, true); paintEmom(); renderPlan(); burst($('#emRing')); toast('Session complete, both rounds logged ✓');
     return;
   }
   const m = Math.floor(EM.elapsed / 60000);
   if (m !== lastMinute) {
     lastMinute = m; beep(1046, 0.3); renderPlan(); pulse('#emName');
-    if (m === 5) toast('Round 2');
+    if (m === 5) { toggleRound(0, true); toast('Round 1 logged. Round 2'); }
   }
   paintEmom();
 }
@@ -520,10 +542,24 @@ function emomJumpTo(minute) {
 }
 const emomStep = delta => emomJumpTo(curMinute() + delta);
 
+// Rounds are logged separately; the day counts once both rounds are in.
+const curRound = () => (curMinute() < 5 ? 0 : 1);
+function paintRounds() {
+  const box = $('#emRounds'); if (!box) return;
+  const r = getDay().kbRounds, cr = curRound();
+  box.innerHTML = r.map((on, i) => `<button class="btn${on ? ' on' : ''}" data-round="${i}">${i === cr ? '<kbd>Enter</kbd> ' : ''}${on ? `Round ${i + 1} ✓` : `Log round ${i + 1}`}</button>`).join('');
+}
+function toggleRound(i, force) {
+  const d = getDay(), was = d.strength;
+  d.kbRounds[i] = force === true ? true : !d.kbRounds[i];
+  d.strength = d.kbRounds.every(Boolean);
+  setDay(d); renderTracker(); paintRounds();
+  if (d.strength && !was) { burst($('#emRounds')); if (force !== true) toast('Both rounds logged, kettlebell done today ✓'); }
+  else if (d.kbRounds[i] && force !== true) toast(`Round ${i + 1} logged`);
+}
 function toggleStrengthDay(k = dkey()) {
-  const d = getDay(k); d.strength = !d.strength; setDay(d, k);
+  const d = getDay(k); d.strength = !d.strength; d.kbRounds = [d.strength, d.strength]; setDay(d, k);
   renderTracker(); paintEmom();
-  if (d.strength && k === dkey()) { burst($('#emDone')); toast('Kettlebell logged for today'); }
 }
 
 function renderTracker() {
@@ -532,8 +568,8 @@ function renderTracker() {
   const days = Array.from({ length: N }, (_, i) => { const d = new Date(today); d.setDate(today.getDate() - (N - 1 - i)); return d; });
   let count = 0;
   $('#trkDays').innerHTML = days.map(d => {
-    const k = dkey(d), on = !!(log[k] && log[k].strength); if (on) count++;
-    return `<button class="day${on ? ' on' : ''}${k === dkey() ? ' today' : ''}" data-day="${k}" title="${d.toDateString()}">${d.getDate()}</button>`;
+    const k = dkey(d), on = !!(log[k] && log[k].strength), half = !on && !!(log[k] && log[k].kbRounds && log[k].kbRounds.some(Boolean)); if (on) count++;
+    return `<button class="day${on ? ' on' : ''}${half ? ' half' : ''}${k === dkey() ? ' today' : ''}" data-day="${k}" title="${d.toDateString()}">${d.getDate()}</button>`;
   }).join('');
   let streak = 0; const c = new Date(today);
   if (!(log[dkey(c)] && log[dkey(c)].strength)) c.setDate(c.getDate() - 1);
@@ -544,7 +580,9 @@ function renderTracker() {
 /* ================= DIET: meal builder ================= */
 const EMOJI = [
   [/yogurt.*berr/i, '🫐'], [/tahini/i, '🥒'], [/ricotta/i, '🍋'], [/sardine|octopus/i, '🐟'], [/mackerel|trout/i, '🐟'],
-  [/tuna/i, '🥫'], [/prosciutto/i, '🥓'], [/salami/i, '🍖'], [/avocado/i, '🥑'], [/smoked salmon/i, '🐟'], [/salmon/i, '🍣'],
+  [/tuna/i, '🥫'], [/prosciutto/i, '🥓'], [/salami/i, '🍖'], [/avocado/i, '🥑'],
+  [/cucumber/i, '🥒'], [/celery|cabbage|romaine|iceberg/i, '🥬'], [/jicama|turnip|kohlrabi|daikon|radish/i, '🥔'], [/carrot|parsnip/i, '🥕'],
+  [/fennel/i, '🌿'], [/snap peas/i, '🫛'], [/artichoke hearts/i, '🌱'], [/salt & vinegar/i, '🧂'], [/bbq/i, '🔥'], [/bagel/i, '🥯'], [/chili/i, '🌶️'], [/garlic-herb/i, '🧄'], [/smoked salmon/i, '🐟'], [/salmon/i, '🍣'],
   [/cottage/i, '🥛'], [/tinned fish/i, '🐟'], [/lounge/i, '🥚'], [/3 eggs|omelet/i, '🍳'], [/egg/i, '🥚'],
   [/cod|tilapia|halibut/i, '🐟'], [/shrimp/i, '🍤'], [/chicken/i, '🍗'], [/turkey/i, '🦃'], [/pork/i, '🐖'],
   [/short rib/i, '🍖'], [/sirloin|flank|ribeye|steak/i, '🥩'], [/broccoli|cauliflower/i, '🥦'], [/green bean/i, '🫛'],
@@ -587,12 +625,14 @@ function catalog(meal, mode = S.mode) {
     ];
   }
   if (meal === 'morning') {
-    const M = H.morning, bm = H.protein_floor.by_meal[0];
-    const kcal = M.master_recipe.reduce((a, r) => a + r.kcal, 0), fib = M.master_recipe.reduce((a, r) => a + r.fiber_g, 0);
-    const cottage = boost.find(b => b.id === 'cottage-cheese-side');
+    const M = H.morning, cottage = boost.find(b => b.id === 'cottage-cheese-side');
+    const veg = r => Object.assign(it(r.name, `${r.qty} (${r.grams} g), ${r.prep}${r.note ? ' · ' + r.note : ''}`, r.protein_g_est, r.kcal, r.fiber_g), { est: true });
+    const subTitle = { hydration_base: 'Swaps · hydration base', crunch_and_bite: 'Swaps · crunch & bite', fiber_anchor: 'Swaps · fiber anchor' };
     return [
-      { title: 'Veggie snack mix', items: [it('Veggie snack mix (full batch)', M.master_recipe.map(r => r.name).join(', '), bm.as_built_g, kcal, +fib.toFixed(1), '🥕')] },
-      { title: 'Protein anchors', note: 'Suggested from elsewhere in your plan; the handout\'s own anchor list isn\'t in the data yet.', items: [
+      { title: 'Veggie mix · base recipe', note: 'Per-vegetable protein is an estimate (USDA values); your sheet gives ~5–8 g for the whole mix.', items: M.master_recipe.map(veg) },
+      ...Object.entries(M.substitutes).map(([g, items]) => ({ title: subTitle[g] || g, items: items.map(veg) })),
+      { title: `Dry rubs · ~${M.seasoning_rubs.kcal_per_batch.min}–${M.seasoning_rubs.kcal_per_batch.max} kcal a batch`, items: M.seasoning_rubs.items.map(r => it(r.name, `${r.ingredients.join(' · ')}. ${r.profile}`, 0, null)) },
+      { title: 'Protein anchors', note: "Suggested from elsewhere in your plan; the handout's own anchor list isn't in the data yet.", items: [
         it('3 eggs', 'from your travel sheet', tb[0].protein_g),
         it('Smoked salmon, 3 oz', 'from your travel sheet', tb[1].protein_g),
         it(`Cottage cheese (${cottage.qty})`, 'boost-in', cottage.protein_g, cottage.kcal),
@@ -622,7 +662,7 @@ function mealTotals(meal, d = getDay()) {
 function mealStatus(meal, d = getDay()) {
   const f = S.data.home.protein_floor.per_meal_g, t = mealTotals(meal, d);
   const state = !t.items.length ? 'none' : t.p.min >= f.min ? 'ok' : t.p.max >= f.min ? 'maybe' : 'short';
-  return { ...t, state, gap: Math.max(0, f.min - t.p.min) };
+  return { ...t, state, gap: ceilGap(Math.max(0, f.min - t.p.min)) };
 }
 const STATE_TXT = { none: 'Nothing picked', ok: 'Clears floor', maybe: 'Borderline', short: 'Short' };
 
@@ -690,10 +730,10 @@ function renderMeal() {
       <div class="h3 grp">${esc(g.title)}</div>
       ${g.note ? `<div class="total" style="margin:-4px 0 8px">${esc(g.note)}</div>` : ''}
       <div class="picks">${g.items.map(i => `
-        <button class="pick${sel.has(i.id) ? ' on' : ''}" data-pick="${esc(i.id)}" data-n="${n++}" aria-pressed="${sel.has(i.id)}">
+        <button class="pick${sel.has(i.id) ? ' on' : ''}" data-pick="${esc(i.id)}" data-n="${n++}" aria-pressed="${sel.has(i.id)}" title="${esc(i.name + (i.sub ? ' — ' + i.sub : ''))}">
           <span class="emo" aria-hidden="true">${i.emoji}</span>
           <span class="pn"><b>${esc(i.name)}</b>${i.sub ? `<span>${esc(i.sub)}</span>` : ''}</span>
-          <span class="pv"><b>${i.p.max ? rtxt(i.p) + ' g' : '0 g'}</b><span>${i.kcal ? rtxt(i.kcal) + ' kcal' : ''}</span></span>
+          <span class="pv"><b>${i.est ? '~' : ''}${i.p.max ? (i.est ? i.p.max.toFixed(1) : rtxt(i.p)) + ' g' : '0 g'}</b><span>${[i.kcal ? rtxt(i.kcal) + ' kcal' : '', i.est ? 'est.' : ''].filter(Boolean).join(' · ')}</span></span>
           <span class="tick" aria-hidden="true">✓</span>
         </button>`).join('')}</div>`).join('')}
     ${referenceFor(S.meal)}`;
@@ -709,6 +749,7 @@ function paintSummary(animate = true) {
   const msg = s.state === 'none' ? `Start at <b>0 g</b>. Tap what you're eating.` :
     s.state === 'ok' ? `<b>Clears the ${pf.min}–${pf.max} g floor.</b>` :
     s.state === 'maybe' ? `Borderline: <b>${rtxt(s.p)} g</b> depending on portions.` : `Short by <b>${s.gap} g</b>.`;
+  const estNote = s.items.some(i => i.est) ? ' <span class="total">(veggie protein estimated)</span>' : '';
   box.innerHTML = `
     <div class="bs-top">
       <div><div class="eyebrow">${MEAL_LABEL[S.meal]} · ${S.mode === 'travel' && S.meal !== 'dinner' ? 'travel' : 'home'}</div>
@@ -723,7 +764,7 @@ function paintSummary(animate = true) {
       <div class="fill" style="width:${Math.min(100, s.p.max / SCALE * 100)}%;opacity:.35"></div>
       <div class="fill" id="bsFill" style="width:${Math.min(100, s.p.min / SCALE * 100)}%"></div>
     </div>
-    <div class="bs-msg">${msg} <span class="bs-emo">${s.items.map(i => i.emoji).join(' ')}</span>
+    <div class="bs-msg">${msg}${estNote} <span class="bs-emo">${s.items.map(i => i.emoji).join(' ')}</span>
       ${sug ? `<button class="btn sm" data-pick="${esc(sug.id)}">+ ${sug.emoji} ${esc(sug.name)} (+${rtxt(sug.p)} g)</button>` : ''}
       ${s.items.length ? '<button class="btn sm ghost" data-act="meal-clear"><kbd>X</kbd> Clear</button>' : ''}</div>`;
   if (animate) pulse('#bsP');
@@ -766,16 +807,7 @@ function referenceFor(meal) {
       <div class="mini"><b>Client lunch / room service</b><span>${esc(T.midday.client_lunch_or_room_service)}</span></div>
       <div class="mini"><b>Grocery / deli</b><span>US: ${esc(g.us.join(', '))} · UK: ${esc(g.uk.join(', '))}. ${esc(g.approach)}</span></div></div></details>`;
   }
-  if (meal === 'morning') {
-    const M = H.morning;
-    return `<details class="ref"><summary>Veggie mix recipe, rubs & swaps</summary>
-      <div class="cols">${M.master_recipe.map(r => `<div class="mini"><b>${emojiFor(r.name) === '🍽️' ? '🥕' : emojiFor(r.name)} ${esc(r.name)}</b><span>${esc(r.qty)} (${r.grams} g), ${esc(r.prep)} · ${r.kcal} kcal · ${r.fiber_g} g fiber · ${esc(r.note)}</span></div>`).join('')}</div>
-      <div class="h3">Zero-calorie dry rubs</div>
-      <div class="cols">${M.seasoning_rubs.items.map(r => `<div class="mini"><b>${esc(r.name)}</b><span>${esc(r.ingredients.join(' · '))}. <i>${esc(r.profile)}</i></span></div>`).join('')}</div>
-      ${Object.entries(M.substitutes).map(([g, items]) => `<div class="h3" style="text-transform:capitalize">Swaps: ${esc(g.replace(/_/g, ' '))}</div>
-        <div class="cols">${items.map(r => `<div class="mini"><b>${esc(r.name)}</b><span>${esc(r.qty)} (${r.grams} g) · ${r.kcal} kcal · ${r.fiber_g} g fiber · ${esc(r.prep)}</span></div>`).join('')}</div>`).join('')}
-    </details>`;
-  }
+  if (meal === 'morning') return '';
   if (meal === 'midday') return `<p class="tierrule" style="margin-top:14px">${esc(H.midday.summary)}</p>`;
   const D = H.dinner;
   return `<details class="ref"><summary>Tier rules & fat budget</summary>
@@ -834,8 +866,8 @@ function go(section, animate = true) {
 function renderKeys() {
   const common = '<span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> sections</span>';
   const per = {
-    stretch: '<span><kbd>Space</kbd> timer</span><span><kbd>←</kbd><kbd>→</kbd> exercise</span><span><kbd>V</kbd> demo</span><span><kbd>Enter</kbd> done</span>',
-    strength: '<span><kbd>Space</kbd> start / pause</span><span><kbd>←</kbd><kbd>→</kbd> exercise</span><span><kbd>V</kbd> demo</span><span><kbd>P</kbd> peak</span>',
+    stretch: '<span><kbd>Space</kbd> timer</span><span><kbd>←</kbd><kbd>→</kbd> exercise</span><span><kbd>V</kbd> demo</span><span><kbd>Enter</kbd> log set</span>',
+    strength: '<span><kbd>Space</kbd> start / pause</span><span><kbd>←</kbd><kbd>→</kbd> exercise</span><span><kbd>Enter</kbd> log round</span><span><kbd>P</kbd> peak</span>',
     diet: '<span><kbd>←</kbd><kbd>→</kbd> meal</span><span><kbd>↑</kbd><kbd>↓</kbd> food</span><span><kbd>Space</kbd> pick</span><span><kbd>T</kbd> travel</span>',
   };
   $('#keys').innerHTML = common + per[S.section] + '<span><kbd>?</kbd> all</span>';
@@ -843,8 +875,8 @@ function renderKeys() {
 
 const HELP = [
   ['Anywhere', [['1  2  3', 'Stretch · Strength · Diet'], ['S  K  D', 'Same, by letter (Stretch, Kettlebell, Diet)'], ['?', 'Show or hide this list'], ['Esc', 'Close / pause the running timer'], ['H', 'Back to mezins.com']]],
-  ['Stretch', [['Space', 'Start / pause the hold timer (or count a rep for calf raises)'], ['← →  or  J L', 'Previous / next exercise'], ['V', 'Show / hide the exercise demo'], ['R', 'Reset the timer'], ['Enter', 'Mark this exercise done today']]],
-  ['Strength', [['Space', 'Start / pause the 10-minute EMOM'], ['← →  or  J L', 'Jump to the previous / next exercise (even mid-session)'], ['V', 'Show / hide the exercise demo'], ['R', 'Reset the clock'], ['P', 'Peak-volume week (fewer swings and lunges)'], ['Enter', 'Log / unlog today\'s session']]],
+  ['Stretch', [['Space', 'Start / pause the hold timer (or count a rep for calf raises)'], ['← →  or  J L', 'Previous / next exercise'], ['V', 'Show / hide the exercise demo'], ['R', 'Reset the timer'], ['Enter', 'Log the next set (each exercise is done when both sets are logged)']]],
+  ['Strength', [['Space', 'Start / pause the 10-minute EMOM'], ['← →  or  J L', 'Jump to the previous / next exercise (even mid-session)'], ['V', 'Show / hide the exercise demo'], ['R', 'Reset the clock'], ['P', 'Peak-volume week (fewer swings and lunges)'], ['Enter', 'Log / unlog the current round (the day counts when both are in)']]],
   ['Diet', [['← →  or  J L', 'Morning · Midday · Dinner'], ['↑ ↓', 'Move between foods'], ['Space  Enter', 'Add / remove the highlighted food'], ['X', 'Clear this meal'], ['T', 'Switch Home / Travel'], ['P', 'Dinner portion 170 / 200 / 230 g']]],
 ];
 function renderHelp() {
@@ -878,7 +910,7 @@ function onKey(e) {
     else if (next) { e.preventDefault(); selectStretch(S.stretchIdx + 1); }
     else if (lk === 'r') resetStretch();
     else if (lk === 'v') toggleFig();
-    else if (k === 'Enter') { e.preventDefault(); markStretch(); }
+    else if (k === 'Enter') { e.preventDefault(); logNextSet(); }
   } else if (S.section === 'strength') {
     if (k === ' ') { e.preventDefault(); emomGo(); }
     else if (prev) { e.preventDefault(); emomStep(-1); }
@@ -886,7 +918,7 @@ function onKey(e) {
     else if (lk === 'r') emomReset();
     else if (lk === 'p') togglePeak();
     else if (lk === 'v') toggleFig();
-    else if (k === 'Enter') { e.preventDefault(); toggleStrengthDay(); }
+    else if (k === 'Enter') { e.preventDefault(); toggleRound(curRound()); }
   } else {
     const i = MEALS.indexOf(S.meal), count = $$('.pick[data-n]').length;
     if (prev) { e.preventDefault(); setMeal(MEALS[(i + 2) % 3]); }
@@ -921,6 +953,8 @@ function onClick(e) {
   if (b.dataset.mode) return b.dataset.mode !== S.mode && setMode(b.dataset.mode);
   if (b.dataset.portion) return setPortion(+b.dataset.portion);
   if (b.dataset.day) return toggleStrengthDay(b.dataset.day);
+  if (b.dataset.set != null) return logSet(+b.dataset.set);
+  if (b.dataset.round != null) return toggleRound(+b.dataset.round);
   if (b.dataset.pick) { if (b.dataset.n != null) S.cursor = +b.dataset.n; paintCursor(false); return togglePick(b.dataset.pick); }
   if (b.dataset.slot != null) {
     const ex = S.data.kb.exercises[+b.dataset.slot], round = curMinute() < 5 ? 0 : 1;
@@ -933,13 +967,11 @@ function onClick(e) {
   const act = b.dataset.act;
   if (act === 'st-go') stretchGo();
   else if (act === 'st-reset') resetStretch();
-  else if (act === 'st-done') markStretch();
   else if (act === 'st-next') selectStretch(S.stretchIdx + 1);
   else if (act === 'em-go') emomGo();
   else if (act === 'em-prev') emomStep(-1);
   else if (act === 'em-next') emomStep(1);
   else if (act === 'em-reset') emomReset();
-  else if (act === 'em-done') toggleStrengthDay();
   else if (act === 'peak') togglePeak();
   else if (act === 'fig') toggleFig();
   else if (act === 'meal-clear') clearMeal();

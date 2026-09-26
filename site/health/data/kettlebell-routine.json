@@ -2,7 +2,9 @@
   "id": "kettlebell-emom",
   "title": "10-Minute Daily Kettlebell Routine",
   "subtitle": "Ultra-Runner Strength & Joint Stability",
-  "equipment": { "kettlebell_lb": 35 },
+  "equipment": {
+    "kettlebell_lb": 35
+  },
   "protocol": {
     "type": "EMOM",
     "duration_min": 10,
@@ -13,55 +15,134 @@
     {
       "id": "kb-swing",
       "name": "Two-Handed Kettlebell Swings",
-      "minutes": [1, 6],
-      "prescription": { "type": "reps", "min": 12, "max": 15 },
-      "form_cues": ["Hinge sharply at hips (don't squat)", "Snap hips forward explosively", "Brace core at top"],
-      "trail_benefit": "Builds posterior chain endurance & glute drive for steep climbs"
+      "minutes": [
+        1,
+        6
+      ],
+      "prescription": {
+        "type": "reps",
+        "value": 20,
+        "note": "per round"
+      },
+      "form_cues": [
+        "Hinge sharply at hips (don't squat)",
+        "Snap hips forward explosively",
+        "Brace core at top"
+      ],
+      "trail_benefit": "Builds posterior chain endurance & glute drive for steep climbs",
+      "prescription_handout": {
+        "type": "reps",
+        "min": 12,
+        "max": 15
+      }
     },
     {
       "id": "sl-deadlift",
       "name": "Single-Leg Deadlifts",
-      "minutes": [2, 7],
-      "prescription": { "type": "reps_per_side", "value": 6 },
-      "form_cues": ["Keep hips level (don't open pelvis)", "Root foot tripod into floor", "Soft bend in standing knee"],
+      "minutes": [
+        2,
+        7
+      ],
+      "prescription": {
+        "type": "reps_per_side",
+        "value": 6
+      },
+      "form_cues": [
+        "Keep hips level (don't open pelvis)",
+        "Root foot tripod into floor",
+        "Soft bend in standing knee"
+      ],
       "trail_benefit": "Single-leg stability, ankle resilience, hamstring strain prevention"
     },
     {
       "id": "goblet-reverse-lunge",
       "name": "Goblet Reverse Lunges",
-      "minutes": [3, 8],
-      "prescription": { "type": "reps_per_side", "value": 6 },
-      "form_cues": ["Hold KB close to chest", "Step back cleanly, keep front knee over toes", "Drive up through front heel"],
+      "minutes": [
+        3,
+        8
+      ],
+      "prescription": {
+        "type": "reps_per_side",
+        "value": 6
+      },
+      "form_cues": [
+        "Hold KB close to chest",
+        "Step back cleanly, keep front knee over toes",
+        "Drive up through front heel"
+      ],
       "trail_benefit": "Eccentric quad strength & braking power for steep technical descents"
     },
     {
       "id": "suitcase-march",
       "name": "Suitcase March",
-      "minutes": [4, 9],
-      "prescription": { "type": "seconds_per_side", "value": 30 },
-      "form_cues": ["Hold KB like a suitcase", "Stand tall with zero side-tilt", "Lift opposite knee with controlled core"],
+      "minutes": [
+        4,
+        9
+      ],
+      "prescription": {
+        "type": "seconds_per_side",
+        "value": 30
+      },
+      "form_cues": [
+        "Hold KB like a suitcase",
+        "Stand tall with zero side-tilt",
+        "Lift opposite knee with controlled core"
+      ],
       "trail_benefit": "Anti-lateral flexion, core stiffness, and balance under fatigue"
     },
     {
       "id": "kb-halo",
       "name": "Kettlebell Halos",
-      "minutes": [5, 10],
-      "prescription": { "type": "reps", "value": 8, "note": "4 each direction" },
-      "form_cues": ["Hold KB horns bottoms-up near chest", "Circle closely around neck/head", "Keep hips locked, torso still"],
+      "minutes": [
+        5,
+        10
+      ],
+      "prescription": {
+        "type": "reps",
+        "value": 8,
+        "note": "4 each direction"
+      },
+      "form_cues": [
+        "Hold KB horns bottoms-up near chest",
+        "Circle closely around neck/head",
+        "Keep hips locked, torso still"
+      ],
       "trail_benefit": "Thoracic mid-back mobility and shoulder stability for pack/vest carrying"
     }
   ],
-  "tracker": { "type": "consistency", "days": 30, "unit": "completed 10-min session" },
+  "tracker": {
+    "type": "consistency",
+    "days": 30,
+    "unit": "completed 10-min session"
+  },
   "rules": [
-    { "id": "consistency", "name": "Consistency Over Intensity", "text": "Never push to failure. Leave 2-3 reps in the tank on every set.", "reps_in_reserve": { "min": 2, "max": 3 } },
-    { "id": "timing", "name": "Timing", "text": "Perform right after a run while warm, or as a standalone session. Avoid right before hard speed work." },
+    {
+      "id": "consistency",
+      "name": "Consistency Over Intensity",
+      "text": "Never push to failure. Leave 2-3 reps in the tank on every set.",
+      "reps_in_reserve": {
+        "min": 2,
+        "max": 3
+      }
+    },
+    {
+      "id": "timing",
+      "name": "Timing",
+      "text": "Perform right after a run while warm, or as a standalone session. Avoid right before hard speed work."
+    },
     {
       "id": "peak-volume-mod",
       "name": "Peak Volume Mod",
       "text": "During high-mileage or vertical gain weeks, drop Swings to 10 reps and Lunges to 4/side.",
       "overrides": {
-        "kb-swing": { "type": "reps", "value": 10 },
-        "goblet-reverse-lunge": { "type": "reps_per_side", "value": 4 }
+        "kb-swing": {
+          "type": "reps",
+          "value": 10
+        },
+        "goblet-reverse-lunge": {
+          "type": "reps_per_side",
+          "value": 4
+        }
       }
     }
   ]

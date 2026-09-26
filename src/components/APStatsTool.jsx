@@ -15,14 +15,17 @@ export default function APStatsTool() {
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "clamp(12px, 4vw, 20px)" }}>
       <header style={{ marginBottom: 16 }}>
-        <h1 style={{ 
-          fontSize: "clamp(18px, 5vw, 24px)", 
-          fontWeight: 700, 
-          color: "#1e293b", 
-          margin: "0 0 12px" 
-        }}>
-          AP Statistics Study Tool
-        </h1>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap", margin: "0 0 12px" }}>
+          <h1 style={{
+            fontSize: "clamp(18px, 5vw, 24px)",
+            fontWeight: 700,
+            color: "#1e293b",
+            margin: 0
+          }}>
+            AP Statistics Study Tool
+          </h1>
+          <a href="/" style={{ fontSize: 14, color: "#64748b", textDecoration: "none" }}>← mezins.com</a>
+        </div>
         <nav style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {tabs.map(t => (
             <button

@@ -55,6 +55,9 @@ article li { margin-bottom: 6px; }
 .pager small { display: block; color: var(--muted); font-size: .75rem; }
 .mobile-nav { display: none; }
 .empty { color: var(--muted); }
+.home { display: inline-block; color: var(--muted); text-decoration: none; font-size: .85rem; margin-bottom: 14px; }
+.home:hover { color: var(--ink); }
+.home[hidden] { display: none; }
 @media (max-width: 760px) {
   .layout { grid-template-columns: 1fr; }
   aside { display: none; }
@@ -68,9 +71,9 @@ article li { margin-bottom: 6px; }
 </style>
 </head>
 <body>
-<div class="mobile-nav"><h1 id="m-title"></h1><select id="m-select" aria-label="Jump to entry"></select></div>
+<div class="mobile-nav"><a class="home" id="m-home" hidden></a><h1 id="m-title"></h1><select id="m-select" aria-label="Jump to entry"></select></div>
 <div class="layout">
-  <aside><h1 id="title"></h1><div class="sub">Spoiler-free companion</div><nav id="nav"></nav></aside>
+  <aside><a class="home" id="home" hidden></a><h1 id="title"></h1><div class="sub">Spoiler-free companion</div><nav id="nav"></nav></aside>
   <main><article id="article"></article>
     <div class="pager"><button id="prev"></button><button id="next"></button></div>
   </main>
@@ -816,7 +819,11 @@ article li { margin-bottom: 6px; }
     }
    ]
   }
- ]
+ ],
+ "home": {
+  "url": "C:/Program Files/Git/",
+  "label": "mezins.com"
+ }
 }
 </script>
 <script>
@@ -834,6 +841,12 @@ if (location.hash) history.replaceState(null, '', location.pathname + location.s
 
 document.getElementById('title').textContent = show;
 document.getElementById('m-title').textContent = show;
+if (data.home && data.home.url) {
+  for (const id of ['home', 'm-home']) {
+    const a = document.getElementById(id);
+    a.href = data.home.url; a.textContent = '← ' + (data.home.label || 'Home'); a.hidden = false;
+  }
+}
 
 const nav = document.getElementById('nav');
 const sel = document.getElementById('m-select');

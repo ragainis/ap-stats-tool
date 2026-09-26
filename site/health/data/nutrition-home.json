@@ -1,114 +1,635 @@
 {
   "id": "daily-density-protein",
   "title": "Complete Daily Density & Protein Reference",
-  "units": { "energy": "kcal", "mass": "g" },
-  "conventions": { "approx": "true when the source value was marked with ~" },
+  "units": {
+    "energy": "kcal",
+    "mass": "g"
+  },
+  "conventions": {
+    "approx": "true when the source value was marked with ~",
+    "protein_g_est": "Per-vegetable protein estimated from USDA FoodData Central per-100g values at the listed gram weights; not from the handout (handout gives ~5-8 g for the whole mix)."
+  },
   "protein_floor": {
     "strategy": "Muscle retention in a deficit depends on hitting a protein floor at each meal, not just a daily total.",
-    "per_meal_g": { "min": 35, "max": 40 },
-    "meals_per_day": { "min": 3, "max": 4 },
+    "per_meal_g": {
+      "min": 35,
+      "max": 40
+    },
+    "meals_per_day": {
+      "min": 3,
+      "max": 4
+    },
     "by_meal": [
-      { "meal": "morning", "floor_g": { "min": 35, "max": 40 }, "as_built_g": { "min": 5, "max": 8, "approx": true, "note": "veggie mix alone" }, "closes_gap": "Add one Protein Anchor" },
-      { "meal": "midday", "floor_g": { "min": 35, "max": 40 }, "as_built_g": { "min": 12, "max": 32, "note": "depending on combo" }, "closes_gap": "Favor Tuna & White Bean, add a Boost-In to the rest" },
-      { "meal": "dinner", "floor_g": { "min": 35, "max": 40, "plus": true }, "as_built_g": { "min": 38, "max": 53, "note": "at 170g portion" }, "closes_gap": "Already clears it, raise to 200-230g on training days" }
+      {
+        "meal": "morning",
+        "floor_g": {
+          "min": 35,
+          "max": 40
+        },
+        "as_built_g": {
+          "min": 5,
+          "max": 8,
+          "approx": true,
+          "note": "veggie mix alone"
+        },
+        "closes_gap": "Add one Protein Anchor"
+      },
+      {
+        "meal": "midday",
+        "floor_g": {
+          "min": 35,
+          "max": 40
+        },
+        "as_built_g": {
+          "min": 12,
+          "max": 32,
+          "note": "depending on combo"
+        },
+        "closes_gap": "Favor Tuna & White Bean, add a Boost-In to the rest"
+      },
+      {
+        "meal": "dinner",
+        "floor_g": {
+          "min": 35,
+          "max": 40,
+          "plus": true
+        },
+        "as_built_g": {
+          "min": 38,
+          "max": 53,
+          "note": "at 170g portion"
+        },
+        "closes_gap": "Already clears it, raise to 200-230g on training days"
+      }
     ]
   },
-
   "morning": {
     "title": "Ultimate Morning High-Volume & High-Fiber Veggie Snack Mix",
     "tag": "Satiety Strategy",
     "master_recipe": [
-      { "group": "hydration_base", "name": "Large Cucumber", "qty": "1", "grams": 300, "prep": "with skin", "kcal": 45, "fiber_g": 1.5, "note": "Hydration base" },
-      { "group": "hydration_base", "name": "Celery Stalks", "qty": "3", "grams": 120, "prep": "batons", "kcal": 18, "fiber_g": 1.9, "note": "High water retention & crunch" },
-      { "group": "fiber_anchor", "name": "Jicama", "qty": "1 cup", "grams": 130, "prep": "cubed", "kcal": 50, "fiber_g": 6.4, "note": "Prebiotic powerhouse" },
-      { "group": "fiber_anchor", "name": "Green Cabbage", "qty": "1 cup", "grams": 70, "prep": "shredded", "kcal": 18, "fiber_g": 1.8, "note": "Flavor sponge & chew bulk" },
-      { "group": "fiber_anchor", "name": "Turnip", "qty": "1 medium", "grams": 120, "prep": "diced", "kcal": 34, "fiber_g": 2.2, "note": "Peppery dense crunch" },
-      { "group": "fiber_anchor", "name": "Carrots", "qty": "2", "grams": 120, "prep": "batons", "kcal": 49, "fiber_g": 3.4, "note": "Firm structure & natural snap" }
+      {
+        "group": "hydration_base",
+        "name": "Large Cucumber",
+        "qty": "1",
+        "grams": 300,
+        "prep": "with skin",
+        "kcal": 45,
+        "fiber_g": 1.5,
+        "note": "Hydration base",
+        "protein_g_est": 2.0
+      },
+      {
+        "group": "hydration_base",
+        "name": "Celery Stalks",
+        "qty": "3",
+        "grams": 120,
+        "prep": "batons",
+        "kcal": 18,
+        "fiber_g": 1.9,
+        "note": "High water retention & crunch",
+        "protein_g_est": 0.8
+      },
+      {
+        "group": "fiber_anchor",
+        "name": "Jicama",
+        "qty": "1 cup",
+        "grams": 130,
+        "prep": "cubed",
+        "kcal": 50,
+        "fiber_g": 6.4,
+        "note": "Prebiotic powerhouse",
+        "protein_g_est": 0.9
+      },
+      {
+        "group": "fiber_anchor",
+        "name": "Green Cabbage",
+        "qty": "1 cup",
+        "grams": 70,
+        "prep": "shredded",
+        "kcal": 18,
+        "fiber_g": 1.8,
+        "note": "Flavor sponge & chew bulk",
+        "protein_g_est": 0.9
+      },
+      {
+        "group": "fiber_anchor",
+        "name": "Turnip",
+        "qty": "1 medium",
+        "grams": 120,
+        "prep": "diced",
+        "kcal": 34,
+        "fiber_g": 2.2,
+        "note": "Peppery dense crunch",
+        "protein_g_est": 1.1
+      },
+      {
+        "group": "fiber_anchor",
+        "name": "Carrots",
+        "qty": "2",
+        "grams": 120,
+        "prep": "batons",
+        "kcal": 49,
+        "fiber_g": 3.4,
+        "note": "Firm structure & natural snap",
+        "protein_g_est": 1.1
+      }
     ],
     "substitutes": {
       "hydration_base": [
-        { "name": "Romaine Hearts", "qty": "2 cups", "grams": 70, "kcal": 12, "fiber_g": 1.5, "prep": "1-inch strips" },
-        { "name": "Iceberg Hearts", "qty": "2 cups", "grams": 70, "kcal": 10, "fiber_g": 0.8, "prep": "chunked squares" },
-        { "name": "Mini Peppers", "qty": "4 whole", "grams": 100, "kcal": 30, "fiber_g": 2.1, "prep": "hollow shells" },
-        { "name": "Radishes", "qty": "8 whole", "grams": 85, "kcal": 13, "fiber_g": 1.4, "prep": "peppery bite" }
+        {
+          "name": "Romaine Hearts",
+          "qty": "2 cups",
+          "grams": 70,
+          "kcal": 12,
+          "fiber_g": 1.5,
+          "prep": "1-inch strips",
+          "protein_g_est": 0.9
+        },
+        {
+          "name": "Iceberg Hearts",
+          "qty": "2 cups",
+          "grams": 70,
+          "kcal": 10,
+          "fiber_g": 0.8,
+          "prep": "chunked squares",
+          "protein_g_est": 0.6
+        },
+        {
+          "name": "Mini Peppers",
+          "qty": "4 whole",
+          "grams": 100,
+          "kcal": 30,
+          "fiber_g": 2.1,
+          "prep": "hollow shells",
+          "protein_g_est": 1.0
+        },
+        {
+          "name": "Radishes",
+          "qty": "8 whole",
+          "grams": 85,
+          "kcal": 13,
+          "fiber_g": 1.4,
+          "prep": "peppery bite",
+          "protein_g_est": 0.6
+        }
       ],
       "crunch_and_bite": [
-        { "name": "Kohlrabi Bulb", "qty": "1 cup", "grams": 135, "kcal": 36, "fiber_g": 4.9, "prep": "peeled cubes" },
-        { "name": "Broccoli Stems", "qty": "1 cup", "grams": 90, "kcal": 27, "fiber_g": 3.3, "prep": "peeled batons" },
-        { "name": "Fennel Bulb", "qty": "1 cup", "grams": 87, "kcal": 27, "fiber_g": 2.7, "prep": "anise crunch" },
-        { "name": "Daikon Radish", "qty": "1 cup", "grams": 115, "kcal": 21, "fiber_g": 1.8, "prep": "crisp root cubes" }
+        {
+          "name": "Kohlrabi Bulb",
+          "qty": "1 cup",
+          "grams": 135,
+          "kcal": 36,
+          "fiber_g": 4.9,
+          "prep": "peeled cubes",
+          "protein_g_est": 2.3
+        },
+        {
+          "name": "Broccoli Stems",
+          "qty": "1 cup",
+          "grams": 90,
+          "kcal": 27,
+          "fiber_g": 3.3,
+          "prep": "peeled batons",
+          "protein_g_est": 2.5
+        },
+        {
+          "name": "Fennel Bulb",
+          "qty": "1 cup",
+          "grams": 87,
+          "kcal": 27,
+          "fiber_g": 2.7,
+          "prep": "anise crunch",
+          "protein_g_est": 1.1
+        },
+        {
+          "name": "Daikon Radish",
+          "qty": "1 cup",
+          "grams": 115,
+          "kcal": 21,
+          "fiber_g": 1.8,
+          "prep": "crisp root cubes",
+          "protein_g_est": 0.7
+        }
       ],
       "fiber_anchor": [
-        { "name": "Brussels Sprouts", "qty": "1 cup", "grams": 85, "kcal": 37, "fiber_g": 3.2, "prep": "shredded slaw" },
-        { "name": "Snow/Snap Peas", "qty": "1 cup", "grams": 98, "kcal": 41, "fiber_g": 2.5, "prep": "whole pods" },
-        { "name": "Parsnip", "qty": "1 medium", "grams": 100, "kcal": 75, "fiber_g": 4.9, "prep": "diced root" },
-        { "name": "Artichoke Hearts", "qty": "1 cup", "grams": 85, "kcal": 40, "fiber_g": 4.0, "prep": "quartered" }
+        {
+          "name": "Brussels Sprouts",
+          "qty": "1 cup",
+          "grams": 85,
+          "kcal": 37,
+          "fiber_g": 3.2,
+          "prep": "shredded slaw",
+          "protein_g_est": 2.9
+        },
+        {
+          "name": "Snow/Snap Peas",
+          "qty": "1 cup",
+          "grams": 98,
+          "kcal": 41,
+          "fiber_g": 2.5,
+          "prep": "whole pods",
+          "protein_g_est": 2.7
+        },
+        {
+          "name": "Parsnip",
+          "qty": "1 medium",
+          "grams": 100,
+          "kcal": 75,
+          "fiber_g": 4.9,
+          "prep": "diced root",
+          "protein_g_est": 1.2
+        },
+        {
+          "name": "Artichoke Hearts",
+          "qty": "1 cup",
+          "grams": 85,
+          "kcal": 40,
+          "fiber_g": 4.0,
+          "prep": "quartered",
+          "protein_g_est": 2.5
+        }
       ]
     },
     "seasoning_rubs": {
-      "kcal_per_batch": { "min": 0, "max": 5, "approx": true },
+      "kcal_per_batch": {
+        "min": 0,
+        "max": 5,
+        "approx": true
+      },
       "items": [
-        { "id": "salt-vinegar", "name": "Salt & Vinegar", "ingredients": ["1 tsp sea salt", "1 tsp citric acid", "1/2 tsp garlic powder"], "profile": "Puckering, sharp, chip-style" },
-        { "id": "smoky-bbq", "name": "Smoky BBQ", "ingredients": ["1 tsp smoked paprika", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp cumin & salt"], "profile": "Deep, savory, campfire" },
-        { "id": "everything-bagel", "name": "Everything Bagel", "ingredients": ["1 tsp sesame seeds", "1 tsp poppy seeds", "1/2 tsp minced garlic", "1/2 tsp flaky salt"], "profile": "Nutty, garlicky, highly textured" },
-        { "id": "chili-lime", "name": "Zesty Chili-Lime", "ingredients": ["1 tsp chili powder", "1 tsp citric acid / lime", "1/2 tsp sea salt", "pinch of cayenne"], "profile": "Tajin-style citrus warmth" },
-        { "id": "garlic-herb", "name": "Garlic-Herb Acid", "ingredients": ["1 tsp dried dill/chives", "1 tsp garlic powder", "1/2 tsp citric acid", "1/2 tsp black pepper"], "profile": "Ranch-inspired tangy herbal" }
+        {
+          "id": "salt-vinegar",
+          "name": "Salt & Vinegar",
+          "ingredients": [
+            "1 tsp sea salt",
+            "1 tsp citric acid",
+            "1/2 tsp garlic powder"
+          ],
+          "profile": "Puckering, sharp, chip-style"
+        },
+        {
+          "id": "smoky-bbq",
+          "name": "Smoky BBQ",
+          "ingredients": [
+            "1 tsp smoked paprika",
+            "1/2 tsp garlic powder",
+            "1/2 tsp onion powder",
+            "1/2 tsp cumin & salt"
+          ],
+          "profile": "Deep, savory, campfire"
+        },
+        {
+          "id": "everything-bagel",
+          "name": "Everything Bagel",
+          "ingredients": [
+            "1 tsp sesame seeds",
+            "1 tsp poppy seeds",
+            "1/2 tsp minced garlic",
+            "1/2 tsp flaky salt"
+          ],
+          "profile": "Nutty, garlicky, highly textured"
+        },
+        {
+          "id": "chili-lime",
+          "name": "Zesty Chili-Lime",
+          "ingredients": [
+            "1 tsp chili powder",
+            "1 tsp citric acid / lime",
+            "1/2 tsp sea salt",
+            "pinch of cayenne"
+          ],
+          "profile": "Tajin-style citrus warmth"
+        },
+        {
+          "id": "garlic-herb",
+          "name": "Garlic-Herb Acid",
+          "ingredients": [
+            "1 tsp dried dill/chives",
+            "1 tsp garlic powder",
+            "1/2 tsp citric acid",
+            "1/2 tsp black pepper"
+          ],
+          "profile": "Ranch-inspired tangy herbal"
+        }
       ]
     },
     "protein_anchors": []
   },
-
   "midday": {
     "title": "Midday: High Satiety, Protein & Fat Anchors",
     "combos": [
-      { "id": "greek-yogurt-berries", "category": "dairy", "name": "Full-Fat Greek Yogurt & Berries", "kcal": 320, "fiber_g": 7.5, "protein_g": 22, "approx": true, "portion": "1 cup full-fat Greek yogurt + 1 cup mixed raspberries & blackberries", "subs": ["whole milk skyr or high-fat sheep's milk yogurt", "blueberries or strawberries"], "clears_floor": false },
-      { "id": "tahini-yogurt-cucumber", "category": "dairy", "name": "Savory Tahini Yogurt & Cucumbers", "kcal": 310, "fiber_g": 3.0, "protein_g": 23, "approx": true, "portion": "1 cup Greek yogurt + 1 tbsp tahini + 1/2 diced cucumber + za'atar", "subs": ["add chopped celery or radishes", "olive oil and sea salt instead of tahini"], "clears_floor": false },
-      { "id": "ricotta-lemon-walnut", "category": "dairy", "name": "Whole-Milk Ricotta, Lemon & Walnuts", "kcal": 360, "fiber_g": 2.0, "protein_g": 24, "approx": true, "portion": "3/4 cup whole-milk ricotta + lemon zest + 15g crushed walnuts", "subs": ["cottage cheese whipped smooth", "pecans or sliced almonds"], "clears_floor": false },
-      { "id": "sardines-bread", "category": "seafood", "name": "Sardines or Octopus in Oil & Bread", "kcal": 300, "fiber_g": 2.5, "protein_g": 24, "approx": true, "portion": "1 tin sardines/octopus in olive oil (~85g drained) + 1 slice sourdough/rye", "subs": ["mackerel or smoked trout", "high-fiber rye crispbread"], "clears_floor": false },
-      { "id": "mackerel-crispbread", "category": "seafood", "name": "Mackerel/Trout Crispbread & Pickles", "kcal": 280, "fiber_g": 4.0, "protein_g": 26, "approx": true, "portion": "1 tin smoked mackerel or trout (90g) + 2 rye crispbreads + pickled onions", "subs": ["smoked salmon or canned tuna", "cucumbers or capers"], "clears_floor": false },
-      { "id": "tuna-white-bean", "category": "seafood", "name": "Tuna & White Bean Mediterranean Salad", "kcal": 340, "fiber_g": 6.0, "protein_g": 32, "approx": true, "portion": "1 can tuna in olive oil (110g) + 1/2 cup cannellini beans + lemon & parsley", "subs": ["chickpeas or butter beans", "artichoke hearts or kalamata olives"], "clears_floor": true, "note": "Source says it clears the floor alone" },
-      { "id": "prosciutto-cheese-radish", "category": "charcuterie", "name": "Prosciutto & Aged Cheese with Radishes", "kcal": 310, "fiber_g": 1.6, "protein_g": 23, "approx": true, "portion": "50g prosciutto (or jamon) + 40g Manchego or Pecorino + 100g radishes", "subs": ["hard salami or bresaola", "celery sticks or jicama"], "clears_floor": false },
-      { "id": "artichoke-bean-salami", "category": "charcuterie", "name": "Artichoke, White Bean & Salami Salad", "kcal": 330, "fiber_g": 7.2, "protein_g": 12, "approx": true, "portion": "1/2 cup marinated artichoke hearts + 1/2 cup cannellini beans + 30g diced salami", "subs": ["grilled zucchini or hearts of palm", "pepperoni or prosciutto scraps"], "clears_floor": false, "needs_boost": true },
-      { "id": "avocado-egg-mash", "category": "plant_forward", "name": "Avocado & Hard-Boiled Egg Mash", "kcal": 350, "fiber_g": 7.0, "protein_g": 14, "approx": true, "portion": "1 small avocado + 2 hard-boiled eggs + lemon juice + everything bagel seasoning", "subs": ["mash with Greek yogurt instead of half the avocado", "serve over cucumber rounds"], "clears_floor": false, "needs_boost": true }
+      {
+        "id": "greek-yogurt-berries",
+        "category": "dairy",
+        "name": "Full-Fat Greek Yogurt & Berries",
+        "kcal": 320,
+        "fiber_g": 7.5,
+        "protein_g": 22,
+        "approx": true,
+        "portion": "1 cup full-fat Greek yogurt + 1 cup mixed raspberries & blackberries",
+        "subs": [
+          "whole milk skyr or high-fat sheep's milk yogurt",
+          "blueberries or strawberries"
+        ],
+        "clears_floor": false
+      },
+      {
+        "id": "tahini-yogurt-cucumber",
+        "category": "dairy",
+        "name": "Savory Tahini Yogurt & Cucumbers",
+        "kcal": 310,
+        "fiber_g": 3.0,
+        "protein_g": 23,
+        "approx": true,
+        "portion": "1 cup Greek yogurt + 1 tbsp tahini + 1/2 diced cucumber + za'atar",
+        "subs": [
+          "add chopped celery or radishes",
+          "olive oil and sea salt instead of tahini"
+        ],
+        "clears_floor": false
+      },
+      {
+        "id": "ricotta-lemon-walnut",
+        "category": "dairy",
+        "name": "Whole-Milk Ricotta, Lemon & Walnuts",
+        "kcal": 360,
+        "fiber_g": 2.0,
+        "protein_g": 24,
+        "approx": true,
+        "portion": "3/4 cup whole-milk ricotta + lemon zest + 15g crushed walnuts",
+        "subs": [
+          "cottage cheese whipped smooth",
+          "pecans or sliced almonds"
+        ],
+        "clears_floor": false
+      },
+      {
+        "id": "sardines-bread",
+        "category": "seafood",
+        "name": "Sardines or Octopus in Oil & Bread",
+        "kcal": 300,
+        "fiber_g": 2.5,
+        "protein_g": 24,
+        "approx": true,
+        "portion": "1 tin sardines/octopus in olive oil (~85g drained) + 1 slice sourdough/rye",
+        "subs": [
+          "mackerel or smoked trout",
+          "high-fiber rye crispbread"
+        ],
+        "clears_floor": false
+      },
+      {
+        "id": "mackerel-crispbread",
+        "category": "seafood",
+        "name": "Mackerel/Trout Crispbread & Pickles",
+        "kcal": 280,
+        "fiber_g": 4.0,
+        "protein_g": 26,
+        "approx": true,
+        "portion": "1 tin smoked mackerel or trout (90g) + 2 rye crispbreads + pickled onions",
+        "subs": [
+          "smoked salmon or canned tuna",
+          "cucumbers or capers"
+        ],
+        "clears_floor": false
+      },
+      {
+        "id": "tuna-white-bean",
+        "category": "seafood",
+        "name": "Tuna & White Bean Mediterranean Salad",
+        "kcal": 340,
+        "fiber_g": 6.0,
+        "protein_g": 32,
+        "approx": true,
+        "portion": "1 can tuna in olive oil (110g) + 1/2 cup cannellini beans + lemon & parsley",
+        "subs": [
+          "chickpeas or butter beans",
+          "artichoke hearts or kalamata olives"
+        ],
+        "clears_floor": true,
+        "note": "Source says it clears the floor alone"
+      },
+      {
+        "id": "prosciutto-cheese-radish",
+        "category": "charcuterie",
+        "name": "Prosciutto & Aged Cheese with Radishes",
+        "kcal": 310,
+        "fiber_g": 1.6,
+        "protein_g": 23,
+        "approx": true,
+        "portion": "50g prosciutto (or jamon) + 40g Manchego or Pecorino + 100g radishes",
+        "subs": [
+          "hard salami or bresaola",
+          "celery sticks or jicama"
+        ],
+        "clears_floor": false
+      },
+      {
+        "id": "artichoke-bean-salami",
+        "category": "charcuterie",
+        "name": "Artichoke, White Bean & Salami Salad",
+        "kcal": 330,
+        "fiber_g": 7.2,
+        "protein_g": 12,
+        "approx": true,
+        "portion": "1/2 cup marinated artichoke hearts + 1/2 cup cannellini beans + 30g diced salami",
+        "subs": [
+          "grilled zucchini or hearts of palm",
+          "pepperoni or prosciutto scraps"
+        ],
+        "clears_floor": false,
+        "needs_boost": true
+      },
+      {
+        "id": "avocado-egg-mash",
+        "category": "plant_forward",
+        "name": "Avocado & Hard-Boiled Egg Mash",
+        "kcal": 350,
+        "fiber_g": 7.0,
+        "protein_g": 14,
+        "approx": true,
+        "portion": "1 small avocado + 2 hard-boiled eggs + lemon juice + everything bagel seasoning",
+        "subs": [
+          "mash with Greek yogurt instead of half the avocado",
+          "serve over cucumber rounds"
+        ],
+        "clears_floor": false,
+        "needs_boost": true
+      }
     ],
     "boost_ins": [
-      { "id": "extra-egg", "name": "Extra Hard-Boiled Egg", "qty": "1", "kcal": 70, "protein_g": 6, "best_for": ["avocado-egg-mash", "artichoke-bean-salami"] },
-      { "id": "cottage-cheese-side", "name": "Cottage Cheese Side", "qty": "1/2 cup", "kcal": 90, "protein_g": 14, "best_for": ["artichoke-bean-salami"] },
-      { "id": "extra-tinned-fish", "name": "Extra Tinned Fish", "qty": "1 oz", "grams": 28, "kcal": 50, "protein_g": 6, "best_for": ["any"] }
+      {
+        "id": "extra-egg",
+        "name": "Extra Hard-Boiled Egg",
+        "qty": "1",
+        "kcal": 70,
+        "protein_g": 6,
+        "best_for": [
+          "avocado-egg-mash",
+          "artichoke-bean-salami"
+        ]
+      },
+      {
+        "id": "cottage-cheese-side",
+        "name": "Cottage Cheese Side",
+        "qty": "1/2 cup",
+        "kcal": 90,
+        "protein_g": 14,
+        "best_for": [
+          "artichoke-bean-salami"
+        ]
+      },
+      {
+        "id": "extra-tinned-fish",
+        "name": "Extra Tinned Fish",
+        "qty": "1 oz",
+        "grams": 28,
+        "kcal": 50,
+        "protein_g": 6,
+        "best_for": [
+          "any"
+        ]
+      }
     ],
     "summary": "Tuna & White Bean Salad is the only combo that clears 35g alone. Artichoke/Salami Salad and Avocado/Egg Mash run lowest (12-14g), pair either with a Boost-In."
   },
-
   "dinner": {
     "title": "Dinner: Density-Tiered Anchor List",
     "strategy": "Fullness tracks the weight and volume of food eaten, not its calorie count. Tiers rank combinations by calories per pound. Tier 1 is the default. Tiers 2 and 3 are deliberate choices.",
     "default_portion_g": 170,
-    "training_day_portion_g": { "min": 200, "max": 230, "applies_to": ["lifting", "bouldering", "hard training"] },
+    "training_day_portion_g": {
+      "min": 200,
+      "max": 230,
+      "applies_to": [
+        "lifting",
+        "bouldering",
+        "hard training"
+      ]
+    },
     "tiers": [
       {
         "tier": 1,
         "name": "Free Volume",
         "rule": "Lean protein + unsauced vegetables, no added cooking fat. Eat to full with minimal cost.",
         "proteins": [
-          { "name": "Cod / Tilapia / Halibut", "grams": 170, "kcal": 190, "protein_g": 42, "note": "Leanest fish, grills or bakes clean" },
-          { "name": "Shrimp", "grams": 170, "kcal": 180, "protein_g": 38, "note": "Fast-cooking, very low fat" },
-          { "name": "Chicken Breast", "grams": 170, "kcal": 280, "protein_g": 53, "note": "Baseline lean poultry" },
-          { "name": "Turkey Breast", "grams": 170, "kcal": 260, "protein_g": 50, "note": "Interchangeable with chicken" },
-          { "name": "Pork Tenderloin", "grams": 170, "kcal": 275, "protein_g": 48, "note": "Leanest common pork cut" },
-          { "name": "Sirloin / Flank Steak", "grams": 170, "kcal": 320, "protein_g": 50, "note": "Leanest beef cuts, trim visible fat" }
+          {
+            "name": "Cod / Tilapia / Halibut",
+            "grams": 170,
+            "kcal": 190,
+            "protein_g": 42,
+            "note": "Leanest fish, grills or bakes clean"
+          },
+          {
+            "name": "Shrimp",
+            "grams": 170,
+            "kcal": 180,
+            "protein_g": 38,
+            "note": "Fast-cooking, very low fat"
+          },
+          {
+            "name": "Chicken Breast",
+            "grams": 170,
+            "kcal": 280,
+            "protein_g": 53,
+            "note": "Baseline lean poultry"
+          },
+          {
+            "name": "Turkey Breast",
+            "grams": 170,
+            "kcal": 260,
+            "protein_g": 50,
+            "note": "Interchangeable with chicken"
+          },
+          {
+            "name": "Pork Tenderloin",
+            "grams": 170,
+            "kcal": 275,
+            "protein_g": 48,
+            "note": "Leanest common pork cut"
+          },
+          {
+            "name": "Sirloin / Flank Steak",
+            "grams": 170,
+            "kcal": 320,
+            "protein_g": 50,
+            "note": "Leanest beef cuts, trim visible fat"
+          }
         ],
         "vegetables": {
           "serving": "1 cup cooked, steamed / grilled / dry-roasted, no oil",
           "items": [
-            { "name": "Broccoli", "grams": 156, "kcal": 55, "fiber_g": 5.1, "protein_g": 3.7, "note": "Dense floret bulk" },
-            { "name": "Cauliflower", "grams": 155, "kcal": 34, "fiber_g": 3.3, "protein_g": 2.7, "note": "Roasts dry without collapsing" },
-            { "name": "Green Beans", "grams": 125, "kcal": 44, "fiber_g": 4.0, "protein_g": 2.4, "note": "Firm bite, holds shape" },
-            { "name": "Asparagus", "grams": 180, "kcal": 40, "fiber_g": 3.6, "protein_g": 4.3, "note": "Grills dry in minutes" },
-            { "name": "Zucchini / Summer Squash", "grams": 180, "kcal": 27, "fiber_g": 2.5, "protein_g": 2.3, "note": "Lowest-density cooked option" },
-            { "name": "Bell Peppers", "grams": 150, "kcal": 38, "fiber_g": 3.4, "protein_g": 1.2, "note": "Sweet, roasts well dry" },
-            { "name": "Spinach / Chard", "grams": 180, "kcal": 41, "fiber_g": 4.3, "protein_g": 5.3, "note": "Wilts down, deceptively filling raw" },
-            { "name": "Mushrooms", "grams": 156, "kcal": 44, "fiber_g": 2.0, "protein_g": 3.9, "note": "Dry-saute or broth, no oil needed" },
-            { "name": "Brussels Sprouts", "grams": 155, "kcal": 65, "fiber_g": 4.1, "protein_g": 5.3, "note": "Densest of this group, still Tier 1" }
+            {
+              "name": "Broccoli",
+              "grams": 156,
+              "kcal": 55,
+              "fiber_g": 5.1,
+              "protein_g": 3.7,
+              "note": "Dense floret bulk"
+            },
+            {
+              "name": "Cauliflower",
+              "grams": 155,
+              "kcal": 34,
+              "fiber_g": 3.3,
+              "protein_g": 2.7,
+              "note": "Roasts dry without collapsing"
+            },
+            {
+              "name": "Green Beans",
+              "grams": 125,
+              "kcal": 44,
+              "fiber_g": 4.0,
+              "protein_g": 2.4,
+              "note": "Firm bite, holds shape"
+            },
+            {
+              "name": "Asparagus",
+              "grams": 180,
+              "kcal": 40,
+              "fiber_g": 3.6,
+              "protein_g": 4.3,
+              "note": "Grills dry in minutes"
+            },
+            {
+              "name": "Zucchini / Summer Squash",
+              "grams": 180,
+              "kcal": 27,
+              "fiber_g": 2.5,
+              "protein_g": 2.3,
+              "note": "Lowest-density cooked option"
+            },
+            {
+              "name": "Bell Peppers",
+              "grams": 150,
+              "kcal": 38,
+              "fiber_g": 3.4,
+              "protein_g": 1.2,
+              "note": "Sweet, roasts well dry"
+            },
+            {
+              "name": "Spinach / Chard",
+              "grams": 180,
+              "kcal": 41,
+              "fiber_g": 4.3,
+              "protein_g": 5.3,
+              "note": "Wilts down, deceptively filling raw"
+            },
+            {
+              "name": "Mushrooms",
+              "grams": 156,
+              "kcal": 44,
+              "fiber_g": 2.0,
+              "protein_g": 3.9,
+              "note": "Dry-saute or broth, no oil needed"
+            },
+            {
+              "name": "Brussels Sprouts",
+              "grams": 155,
+              "kcal": 65,
+              "fiber_g": 4.1,
+              "protein_g": 5.3,
+              "note": "Densest of this group, still Tier 1"
+            }
           ]
         }
       },
@@ -117,10 +638,32 @@
         "name": "Moderate Density",
         "rule": "Same proteins and vegetables, plus one deliberate fat addition per meal.",
         "items": [
-          { "name": "Salmon", "grams": 170, "kcal": 310, "protein_g": 34, "note": "Fattier fish, counts as its own fat addition" },
-          { "name": "Ribeye (trimmed)", "grams": 170, "kcal": 420, "protein_g": 42, "note": "Marbling raises density even trimmed" },
-          { "name": "Any Tier 1 protein + 1 tbsp olive oil", "kcal_added": 119, "note": "Standard saute or dressing allowance" },
-          { "name": "Any Tier 1 protein + 1 oz cheese", "grams_added": 28, "kcal_added": 110, "protein_g_added": 7, "note": "Melted or shaved, one portion" }
+          {
+            "name": "Salmon",
+            "grams": 170,
+            "kcal": 310,
+            "protein_g": 34,
+            "note": "Fattier fish, counts as its own fat addition"
+          },
+          {
+            "name": "Ribeye (trimmed)",
+            "grams": 170,
+            "kcal": 420,
+            "protein_g": 42,
+            "note": "Marbling raises density even trimmed"
+          },
+          {
+            "name": "Any Tier 1 protein + 1 tbsp olive oil",
+            "kcal_added": 119,
+            "note": "Standard saute or dressing allowance"
+          },
+          {
+            "name": "Any Tier 1 protein + 1 oz cheese",
+            "grams_added": 28,
+            "kcal_added": 110,
+            "protein_g_added": 7,
+            "note": "Melted or shaved, one portion"
+          }
         ]
       },
       {
@@ -128,18 +671,90 @@
         "name": "Occasion Density",
         "rule": "Fattier cuts, starches, or sauced dishes. Fullness arrives at a much higher calorie cost.",
         "items": [
-          { "name": "Ribeye (untrimmed) / Short Rib", "grams": 170, "kcal": { "min": 480, "max": 560 }, "protein_g": { "min": 38, "max": 42 }, "note": "High fat cap even before sauce" },
-          { "name": "Pasta / Rice as base", "qty": "1.5 cups cooked", "kcal": { "min": 300, "max": 340 }, "fiber_g": { "min": 2, "max": 3 }, "protein_g": { "min": 7, "max": 8 }, "note": "Low volume-per-calorie starch base" },
-          { "name": "Cream or Butter Pan Sauce", "qty": "2 tbsp", "kcal_added": { "min": 150, "max": 200 }, "note": "Compounds fast on top of the protein" },
-          { "name": "Fried preparation (any protein)", "kcal_added": { "min": 150, "max": 250 }, "note": "Breading and oil absorption" }
+          {
+            "name": "Ribeye (untrimmed) / Short Rib",
+            "grams": 170,
+            "kcal": {
+              "min": 480,
+              "max": 560
+            },
+            "protein_g": {
+              "min": 38,
+              "max": 42
+            },
+            "note": "High fat cap even before sauce"
+          },
+          {
+            "name": "Pasta / Rice as base",
+            "qty": "1.5 cups cooked",
+            "kcal": {
+              "min": 300,
+              "max": 340
+            },
+            "fiber_g": {
+              "min": 2,
+              "max": 3
+            },
+            "protein_g": {
+              "min": 7,
+              "max": 8
+            },
+            "note": "Low volume-per-calorie starch base"
+          },
+          {
+            "name": "Cream or Butter Pan Sauce",
+            "qty": "2 tbsp",
+            "kcal_added": {
+              "min": 150,
+              "max": 200
+            },
+            "note": "Compounds fast on top of the protein"
+          },
+          {
+            "name": "Fried preparation (any protein)",
+            "kcal_added": {
+              "min": 150,
+              "max": 250
+            },
+            "note": "Breading and oil absorption"
+          }
         ]
       }
     ],
     "fat_budget": [
-      { "name": "Olive Oil / Butter", "qty": "1 tbsp", "kcal": { "min": 100, "max": 120 }, "note": "Easy to pour past one tbsp without noticing" },
-      { "name": "Avocado", "qty": "1/4", "kcal": 80, "protein_g": 1, "approx": true, "note": "Cleanest fat addition, self-portions well" },
-      { "name": "Cheese, shredded", "qty": "1 oz", "kcal": 110, "protein_g": 7, "note": "Melts thin, easy to double without noticing" },
-      { "name": "Cream-based Sauce", "qty": "2 tbsp", "kcal": { "min": 100, "max": 150 }, "note": "Usually the single largest hidden add" }
+      {
+        "name": "Olive Oil / Butter",
+        "qty": "1 tbsp",
+        "kcal": {
+          "min": 100,
+          "max": 120
+        },
+        "note": "Easy to pour past one tbsp without noticing"
+      },
+      {
+        "name": "Avocado",
+        "qty": "1/4",
+        "kcal": 80,
+        "protein_g": 1,
+        "approx": true,
+        "note": "Cleanest fat addition, self-portions well"
+      },
+      {
+        "name": "Cheese, shredded",
+        "qty": "1 oz",
+        "kcal": 110,
+        "protein_g": 7,
+        "note": "Melts thin, easy to double without noticing"
+      },
+      {
+        "name": "Cream-based Sauce",
+        "qty": "2 tbsp",
+        "kcal": {
+          "min": 100,
+          "max": 150
+        },
+        "note": "Usually the single largest hidden add"
+      }
     ],
     "summary": "The standard 170g Tier 1 portion delivers 38-53g protein. On lifting, bouldering, or hard-training days, raise the portion to 200-230g rather than adding a separate protein source."
   }
