@@ -40,8 +40,10 @@ header p { color: var(--muted); margin: 0 0 44px; font-size: 1.05rem; }
 .go { margin-top: 12px; font-weight: 600; font-size: .9rem; color: var(--accent); }
 .stats .art { background: linear-gradient(135deg, #dbe7f3, #b9d0e8); color: #1f4e79; }
 .americans .art { background: linear-gradient(135deg, #3a1b1b, #7a2424); color: #f3d9c4; }
+.health .art { background: linear-gradient(135deg, #d7ece9, #b2d8d3); color: #1f5f5d; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .stats .art { background: linear-gradient(135deg, #1b2a3a, #24405e); color: #b9d3ee; }
+  :root:not([data-theme="light"]) .health .art { background: linear-gradient(135deg, #15302e, #1f4a46); color: #a9dcd6; }
 }
 footer { margin-top: 56px; color: var(--muted); font-size: .85rem; }
 @media (max-width: 600px) { .wrap { padding: 44px 16px 48px; } header p { margin-bottom: 28px; } }
@@ -54,6 +56,19 @@ footer { margin-top: 56px; color: var(--muted); font-size: .85rem; }
     <p>Small tools and companions I've built.</p>
   </header>
   <main class="grid">
+    <a class="tile health" href="/health/">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 22a10 10 0 0 1 20 0"/><circle cx="32" cy="38" r="16"/><path d="M24 38h5l3-6 4 12 3-6h2"/>
+        </svg>
+      </div>
+      <div class="body">
+        <span class="kind">Daily habits</span>
+        <h2>Stretch · Strength · Diet</h2>
+        <p>Guided stretch timer, 10-minute kettlebell EMOM and the protein-floor food guide.</p>
+        <span class="go">Open →</span>
+      </div>
+    </a>
     <a class="tile stats" href="/ap-stats/">
       <div class="art" aria-hidden="true">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">

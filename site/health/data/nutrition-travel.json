@@ -1,0 +1,43 @@
+{
+  "id": "travel-density-protein",
+  "title": "Travel Density & Protein Reference",
+  "cities": ["Chicago", "NYC", "Cleveland", "London"],
+  "strategy": "The tiers and the 35-40g-per-meal protein floor don't change on the road. At home the system is a shopping list, traveling it's an ordering script.",
+  "protein_floor_per_meal_g": { "min": 35, "max": 40 },
+  "ordering_script": [
+    "Could I get the [protein] grilled/roasted/broiled, dry, no butter finish, sauce on the side?",
+    "Can I swap the [potato/rice/fries] for a double order of vegetables, steamed or grilled, no oil?"
+  ],
+  "defaults": ["Skip the bread basket", "Dressing and sauces always on the side, stated not asked"],
+  "morning": {
+    "hotel_breakfast": {
+      "order": "Veggie omelet or scrambled eggs, dry, fruit on the side instead of potatoes.",
+      "protein": [
+        { "item": "3 eggs", "protein_g": 19, "approx": true },
+        { "item": "Smoked salmon, 3 oz", "protein_g": 17, "approx": true, "note": "no added fat" }
+      ],
+      "marriott_note": "Elite breakfast benefit is the easiest protein anchor of the trip, use it by default."
+    },
+    "airport_lounge": {
+      "lounges": ["Delta Sky Club", "Centurion Lounge", "Priority Pass"],
+      "picks": ["hard-boiled eggs", "smoked salmon", "cottage cheese cups", "charcuterie board meats"],
+      "picks_protein_g": { "min": 15, "max": 25, "note": "combined" },
+      "skip_by_default": ["pastry spread", "hot buffet starches"]
+    },
+    "summary": "Hotel eggs alone get to ~19g. Add lounge protein on travel days to close the 35-40g floor."
+  },
+  "midday": {
+    "fast_casual_order": {
+      "script": "Double [chicken/steak/salmon], salad base not rice, no cheese, no crema, salsa or vinaigrette on the side.",
+      "protein_g": { "min": 40, "max": 50 },
+      "availability": "Chipotle-format chains in all four cities, roughly 20 locations in central London."
+    },
+    "client_lunch_or_room_service": "Same script as dinner. Grilled or roasted protein, vegetables instead of starch, sauce on the side.",
+    "grocery_deli": {
+      "us": ["Whole Foods", "supermarket rotisserie counter"],
+      "uk": ["M&S Food", "Pret"],
+      "approach": "Rotisserie or roast protein plus pre-cut vegetables, eaten cold if needed."
+    }
+  },
+  "dinner": null
+}

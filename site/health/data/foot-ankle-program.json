@@ -1,0 +1,69 @@
+{
+  "id": "foot-ankle-conditioning",
+  "title": "Foot and Ankle Conditioning Program",
+  "section": "Stretching Exercise",
+  "note": "Handout uses 'affected' / 'unaffected' leg terminology.",
+  "exercises": [
+    {
+      "id": "heel-cord-stretch",
+      "order": 1,
+      "name": "Heel Cord Stretch",
+      "main_muscles": ["Gastrocnemius-soleus complex"],
+      "feel_it": "Calf and into your heel",
+      "equipment": [],
+      "steps": [
+        "Stand facing a wall with your unaffected leg forward with a slight bend at the knee. Your affected leg is straight and behind you, with the heel flat and the toes pointed in slightly.",
+        "Keep both heels flat on the floor and press your hips forward toward the wall.",
+        "Hold this stretch for 30 seconds and then relax for 30 seconds. Repeat."
+      ],
+      "dosage": { "hold_sec": 30, "rest_sec": 30, "repeat": 10, "sets": 2, "days_per_week": { "min": 6, "max": 7 } },
+      "tip": "Do not arch your back."
+    },
+    {
+      "id": "heel-cord-stretch-bent-knee",
+      "order": 2,
+      "name": "Heel Cord Stretch with Bent Knee",
+      "main_muscles": ["Soleus"],
+      "feel_it": "Calf, the sides of your ankle, and into your heel",
+      "equipment": [],
+      "steps": [
+        "Stand facing a wall with your unaffected leg forward with a slight bend at the knee. Your affected leg is behind you, with the knee bent and the toes pointed in slightly.",
+        "Keep both heels flat on the floor and press your hips forward toward the wall.",
+        "Hold this stretch for 30 seconds and then relax for 30 seconds. Repeat."
+      ],
+      "dosage": { "hold_sec": 30, "rest_sec": 30, "repeat": 10, "sets": 2, "days_per_week": { "min": 6, "max": 7 } },
+      "tip": "Keep your hips centered over both feet."
+    },
+    {
+      "id": "calf-raises",
+      "order": 3,
+      "name": "Calf Raises",
+      "main_muscles": ["Gastrocnemius-soleus complex"],
+      "feel_it": "Calf",
+      "equipment": ["Chair for support"],
+      "steps": [
+        "Stand with your weight evenly distributed over both feet. Hold onto the back of a chair or a wall for balance.",
+        "Lift your unaffected foot off the floor so that all of your weight is placed on your affected foot.",
+        "Raise the heel of your affected foot as high as you can, then lower. Repeat."
+      ],
+      "dosage": { "repeat": 10, "sets": 2, "days_per_week": { "min": 6, "max": 7 } },
+      "tip": "Do not bend the knee of your working leg."
+    },
+    {
+      "id": "towel-stretch",
+      "order": 4,
+      "name": "Towel Stretch",
+      "main_muscles": ["Gastrocnemius-soleus complex"],
+      "feel_it": "Calf and into your heel",
+      "equipment": ["Hand towel"],
+      "steps": [
+        "Sit on the floor with both legs out in front of you.",
+        "Loop a towel around the ball of your affected foot and grasp the ends of the towel in your hands.",
+        "Keep your affected leg straight and pull the towel toward you.",
+        "Hold this stretch for 30 seconds and then relax for 30 seconds. Repeat."
+      ],
+      "dosage": { "hold_sec": 30, "rest_sec": 30, "repeat": 10, "sets": 2, "days_per_week": { "min": 6, "max": 7 } },
+      "tip": "Sit up tall and keep your legs straight."
+    }
+  ]
+}
